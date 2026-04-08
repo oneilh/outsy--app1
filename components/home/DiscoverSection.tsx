@@ -216,18 +216,18 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
           </div>
 
           <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                <RiMapPinLine className="h-3 w-3 text-white" />
-                <span className="text-[10px] font-bold text-white uppercase tracking-wider">{currentSpot.area}</span>
-                <span className="text-white/30">·</span>
-                <span className="text-[10px] font-black text-white">{BUDGET_SYMBOLS[currentSpot.budgetTier]}</span>
-              </div>
+            <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+              <RiMapPinLine className="h-3 w-3 text-white" />
+              <span className="text-[10px] font-bold text-white uppercase tracking-wider">{currentSpot.area}</span>
+              <span className="text-white/30">·</span>
+              <span className="text-[10px] font-black text-white">{BUDGET_SYMBOLS[currentSpot.budgetTier]}</span>
             </div>
-            
-            <div className="flex items-center gap-1 text-primary font-bold text-xs bg-white px-4 py-2 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all active:scale-95">
-              Check it out
-              <RiArrowRightSLine className="h-4 w-4" />
+
+            <div className="flex items-center gap-1 text-primary font-black text-[10px] uppercase tracking-wider bg-white px-3 py-1.5 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all active:scale-95">
+              Discover
+              <RiArrowRightSLine className="h-3.5 w-3.5" />
             </div>
+          </div>
         </Link>
 
         {/* Floating arrows (visible only on hover on desktop) */}
