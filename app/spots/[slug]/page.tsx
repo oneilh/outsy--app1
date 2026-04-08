@@ -14,6 +14,7 @@ import { SpotHero } from "@/components/spots/SpotHero";
 import { VibeTagList } from "@/components/spots/VibeTagList";
 import { AmenitiesList } from "@/components/spots/AmenitiesList";
 import { GoingNowButton } from "@/components/spots/GoingNowButton";
+import { ShareSpot } from "@/components/spots/ShareSpot";
 import { SimilarSpots } from "@/components/spots/SimilarSpots";
 
 interface Props {
@@ -173,6 +174,9 @@ export default async function SpotDetailPage({ params }: Props) {
               </div>
             </Link>
           )}
+
+          {/* Share */}
+          <ShareSpot spot={spot} />
 
           {/* Website */}
           {spot.website && (
