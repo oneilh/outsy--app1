@@ -32,7 +32,7 @@ export function Navigation() {
   return (
     <>
       {/* ── Desktop top nav ─────────────────────────────────────────── */}
-      <header className="hidden md:flex sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="w-full max-w-7xl mx-auto flex h-16 items-center justify-between px-6 lg:px-10">
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0">
@@ -47,7 +47,7 @@ export function Navigation() {
           </Link>
 
           {/* Nav links */}
-          <nav className="flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 pathname === item.href ||
