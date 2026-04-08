@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { RiArrowRightLine, RiFlashlightLine, RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
+import { RiArrowRightLine, RiFlashlightLine, RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine, RiStarFill, RiTimerFlashLine } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 
 interface TrendingSectionProps {
@@ -63,16 +63,10 @@ function getTrendingReason(spot: Spot): string {
   return reasons[spot.id.length % reasons.length];
 }
 
-const BUDGET_DOT: Record<string, string> = {
-  budget: "bg-green-400",
-  mid: "bg-accent",
-  splurge: "bg-primary",
-};
-
-const BUDGET_LABELS: Record<string, string> = {
-  budget: "Budget",
-  mid: "Mid-range",
-  splurge: "Splurge",
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
 };
 
 export function TrendingSection({ spots }: TrendingSectionProps) {
@@ -140,17 +134,31 @@ export function TrendingSection({ spots }: TrendingSectionProps) {
                 <RiMapPinLine className="h-3 w-3 shrink-0" />
                 <span className="text-xs font-medium">{spot.area}</span>
                 <span className="mx-0.5 text-muted-foreground/30">·</span>
-                <span
-                  className={`h-1.5 w-1.5 rounded-full shrink-0 ${BUDGET_DOT[spot.budgetTier] ?? "bg-muted"}`}
-                />
-                <span className="text-xs font-medium">{BUDGET_LABELS[spot.budgetTier]}</span>
+                <span className="text-xs font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
               </div>
 
-              {/* Trending reason pill */}
-              <div className="mt-2">
-                <span className="inline-flex items-center gap-1 rounded-lg bg-accent/5 border border-accent/10 px-2 py-0.5 text-[10px] font-bold text-accent uppercase tracking-tight">
-                  {getTrendingReason(spot)}
-                </span>
+              {/* Status/Trending reason pill */}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {spot.special ? (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-black text-primary uppercase tracking-tight">
+                    <RiFlashlightLine className="h-2.5 w-2.5" />
+                    {spot.special.label}
+                  </span>
+                ) : spot.isFeatured ? (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-accent/10 border border-accent/20 px-2 py-0.5 text-[10px] font-black text-accent uppercase tracking-tight">
+                    <RiStarFill className="h-2.5 w-2.5" />
+                    Spotlight
+                  </span>
+                ) : spot.isNew ? (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[10px] font-black text-green-600 uppercase tracking-tight">
+                    <RiTimerFlashLine className="h-2.5 w-2.5" />
+                    New
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-accent/5 border border-accent/10 px-2 py-0.5 text-[10px] font-bold text-accent uppercase tracking-tight">
+                    {getTrendingReason(spot)}
+                  </span>
+                )}
               </div>
             </div>
 

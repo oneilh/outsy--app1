@@ -26,6 +26,10 @@ export interface Spot {
   isOutsyPick: boolean;
   isNew: boolean;
   goingNowCount: number;
+  special?: {
+    label: string;
+    type: 'promo' | 'event' | 'active' | 'limited';
+  };
   type: 'spot' | 'event';
   eventDate?: string;
   eventEndDate?: string;

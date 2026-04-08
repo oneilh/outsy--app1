@@ -7,7 +7,6 @@ import {
   RiBookmarkLine,
   RiBookmarkFill,
   RiGroupLine,
-  RiCheckboxCircleFill,
 } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { useSavedSpots } from "@/lib/hooks/useSavedSpots";
@@ -21,6 +20,12 @@ const CATEGORY_LABELS: Record<string, string> = {
   cafe: "Café",
   hotel: "Hotel",
   event: "Event",
+};
+
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
 };
 
 interface SpotHeroProps {
@@ -73,12 +78,6 @@ export function SpotHero({ spot }: SpotHeroProps) {
           <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-primary text-white">
             {CATEGORY_LABELS[spot.category] ?? spot.category}
           </span>
-          {spot.isVerified && (
-            <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-white/20 backdrop-blur-sm text-white">
-              <RiCheckboxCircleFill className="h-3 w-3 text-green-400" />
-              Verified
-            </span>
-          )}
           {spot.isNew && (
             <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-accent text-secondary">
               New
@@ -91,8 +90,8 @@ export function SpotHero({ spot }: SpotHeroProps) {
         </h1>
 
         <div className="flex items-center gap-3">
-          <span className="text-sm text-white/80">
-            {spot.area}, {spot.city}
+          <span className="text-sm text-white/80 font-medium">
+            {spot.area} · {BUDGET_SYMBOLS[spot.budgetTier]}
           </span>
           {spot.goingNowCount > 0 && (
             <span className="inline-flex items-center gap-1 text-sm text-white/80">

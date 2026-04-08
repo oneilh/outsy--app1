@@ -89,6 +89,10 @@
     "isOutsyPick": false,
     "isNew": false,
     "goingNowCount": 9,
+    "special": {
+      "label": "Sunday Brunch",
+      "type": "event"
+    },
     "type": "spot",
     "createdAt": "2024-02-01T00:00:00Z"
   },
@@ -182,6 +186,10 @@
     "isOutsyPick": false,
     "isNew": true,
     "goingNowCount": 8,
+    "special": {
+      "label": "Happy Hour",
+      "type": "promo"
+    },
     "type": "spot",
     "createdAt": "2024-03-10T00:00:00Z"
   },
@@ -275,6 +283,10 @@
     "isOutsyPick": false,
     "isNew": false,
     "goingNowCount": 67,
+    "special": {
+      "label": "Ladies Night",
+      "type": "event"
+    },
     "type": "spot",
     "createdAt": "2024-01-01T00:00:00Z"
   },
@@ -492,6 +504,10 @@
     "isOutsyPick": false,
     "isNew": false,
     "goingNowCount": 7,
+    "special": {
+      "label": "Live Jazz",
+      "type": "event"
+    },
     "type": "spot",
     "createdAt": "2024-01-01T00:00:00Z"
   },

@@ -4,12 +4,18 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import Image from "next/image";
 import Link from "next/link";
-import { RiMapPinLine, RiFireLine, RiVerifiedBadgeFill, RiTimerFlashLine, RiStarFill } from "react-icons/ri";
+import { RiMapPinLine, RiFireLine, RiTimerFlashLine, RiStarFill, RiFlashlightLine } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 
 interface OutsyPicksCarouselProps {
   picks: Spot[];
 }
+
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
+};
 
 export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
   return (
@@ -69,50 +75,38 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Budget Tier Badge */}
+              {/* Special Badges Info (Only New/Spotlight/Special) */}
               <div className="absolute top-3 left-3 flex flex-col gap-2">
-                <span className={`badge shadow-lg ${
-                  spot.budgetTier === "budget"
-                    ? "bg-green-500 text-white"
-                    : spot.budgetTier === "mid"
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-primary text-white"
-                }`}>
-                  {spot.budgetTier === "budget" 
-                    ? "Budget" 
-                    : spot.budgetTier === "mid" 
-                    ? "Mid-range" 
-                    : "Splurge"}
-                </span>
-
-                {spot.isNew && (
-                  <span className="badge bg-green-500 text-white shadow-lg flex items-center gap-1">
-                    <RiTimerFlashLine className="h-3 w-3" />
-                    New
+                {spot.special ? (
+                  <span className="badge bg-primary text-white shadow-lg flex items-center gap-1">
+                    <RiFlashlightLine className="h-3 w-3" />
+                    {spot.special.label}
                   </span>
-                )}
-                
-                {spot.isFeatured && (
+                ) : spot.isFeatured ? (
                   <span className="badge bg-accent text-accent-foreground shadow-lg flex items-center gap-1">
                     <RiStarFill className="h-3 w-3" />
                     Spotlight
                   </span>
-                )}
+                ) : spot.isNew ? (
+                  <span className="badge bg-green-500 text-white shadow-lg flex items-center gap-1">
+                    <RiTimerFlashLine className="h-3 w-3" />
+                    New
+                  </span>
+                ) : null}
               </div>
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                <div className="mb-1 min-w-0">
                   <h3 className="text-white font-bold text-xl leading-tight truncate">
                     {spot.name}
                   </h3>
-                  {spot.isVerified && (
-                    <RiVerifiedBadgeFill className="h-5 w-5 text-blue-400 shrink-0" />
-                  )}
                 </div>
-                <div className="flex items-center gap-1 text-white/80 text-sm mb-2">
+                <div className="flex items-center gap-1.5 text-white/80 text-sm mb-2 font-medium">
                   <RiMapPinLine className="h-4 w-4 flex-shrink-0" />
                   <span>{spot.area}</span>
+                  <span className="text-white/30">·</span>
+                  <span className="text-white font-bold">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {spot.vibeTags.slice(0, 3).map((tag) => (

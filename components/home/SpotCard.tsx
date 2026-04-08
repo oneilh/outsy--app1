@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { RiMapPinLine, RiGroupLine, RiBookmarkLine, RiBookmarkFill } from "react-icons/ri";
+import { RiMapPinLine, RiGroupLine, RiBookmarkLine, RiBookmarkFill, RiTimerFlashLine, RiStarFill, RiFlashlightLine } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { useSavedSpots } from "@/lib/hooks/useSavedSpots";
 
@@ -15,6 +15,12 @@ const CATEGORY_LABELS: Record<string, string> = {
   cafe: "Café",
   hotel: "Hotel",
   event: "Event",
+};
+
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
 };
 
 interface SpotCardProps {
@@ -41,10 +47,28 @@ export function SpotCard({ spot, trendingReason }: SpotCardProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
         {/* Category chip */}
-        <div className="absolute top-2 left-2">
-          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-black/50 text-white backdrop-blur-sm">
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-black/60 text-white backdrop-blur-sm">
             {CATEGORY_LABELS[spot.category] ?? spot.category}
           </span>
+          
+          {/* Status Badges - Prioritize Special > Spotlight > New to avoid "spam" */}
+          {spot.special ? (
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-primary text-white shadow-lg">
+              <RiFlashlightLine className="h-2.5 w-2.5" />
+              {spot.special.label}
+            </span>
+          ) : spot.isFeatured ? (
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+              <RiStarFill className="h-2.5 w-2.5" />
+              Spotlight
+            </span>
+          ) : spot.isNew ? (
+            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
+              <RiTimerFlashLine className="h-2.5 w-2.5" />
+              New
+            </span>
+          ) : null}
         </div>
 
         {/* Save button */}
@@ -76,9 +100,11 @@ export function SpotCard({ spot, trendingReason }: SpotCardProps) {
         <h3 className="font-semibold text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors">
           {spot.name}
         </h3>
-        <div className="flex items-center gap-1 text-muted-foreground mt-0.5">
+        <div className="flex items-center gap-1.5 text-muted-foreground mt-0.5">
           <RiMapPinLine className="h-3 w-3 flex-shrink-0" />
           <span className="text-xs line-clamp-1">{spot.area}</span>
+          <span className="text-muted-foreground/30">·</span>
+          <span className="text-[10px] font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
         </div>
         {trendingReason && (
           <div className="mt-1.5">

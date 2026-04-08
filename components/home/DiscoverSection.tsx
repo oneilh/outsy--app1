@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { RiSunLine, RiCloudyLine, RiMoonLine, RiMapPinLine, RiArrowRightSLine, RiArrowLeftSLine } from "react-icons/ri";
+import { RiSunLine, RiCloudyLine, RiMoonLine, RiMapPinLine, RiArrowRightSLine, RiArrowLeftSLine, RiTimerFlashLine, RiStarFill, RiFlashlightLine } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,12 @@ const TABS: { id: TimeOfDay; label: string; icon: any }[] = [
   { id: "afternoon", label: "Afternoon", icon: RiCloudyLine },
   { id: "night", label: "Night", icon: RiMoonLine },
 ];
+
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
+};
 
 export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionProps) {
   const [activeTab, setActiveTab] = useState<TimeOfDay>("morning");
@@ -179,10 +185,28 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
           href={`/spots/${currentSpot.slug}`}
           className="absolute bottom-6 left-6 right-6 z-20 flex flex-col gap-3"
         >
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/90">
-              {activeTab} recommendations
-            </span>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/90">
+                {activeTab} recommendations
+              </span>
+              {currentSpot.special ? (
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-primary text-white shadow-lg">
+                  <RiFlashlightLine className="h-2 w-2" />
+                  {currentSpot.special.label}
+                </span>
+              ) : currentSpot.isFeatured ? (
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+                  <RiStarFill className="h-2 w-2" />
+                  Spotlight
+                </span>
+              ) : currentSpot.isNew ? (
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-green-500 text-white shadow-sm">
+                  <RiTimerFlashLine className="h-2 w-2" />
+                  New
+                </span>
+              ) : null}
+            </div>
             <h3 className="text-2xl font-black text-white leading-tight drop-shadow-md">
               {currentSpot.name}
             </h3>
@@ -192,19 +216,11 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
           </div>
 
           <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1 bg-white/10 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10">
+              <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
                 <RiMapPinLine className="h-3 w-3 text-white" />
-                <span className="text-[10px] font-bold text-white uppercase">{currentSpot.area}</span>
-              </div>
-              <div className="flex items-center gap-1 bg-white/10 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10">
-                <span className="text-[10px] font-bold text-white uppercase">
-                  {currentSpot.budgetTier === "budget" 
-                    ? "Budget" 
-                    : currentSpot.budgetTier === "mid" 
-                    ? "Mid-range" 
-                    : "Splurge"}
-                </span>
+                <span className="text-[10px] font-bold text-white uppercase tracking-wider">{currentSpot.area}</span>
+                <span className="text-white/30">·</span>
+                <span className="text-[10px] font-black text-white">{BUDGET_SYMBOLS[currentSpot.budgetTier]}</span>
               </div>
             </div>
             
@@ -212,7 +228,6 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
               Check it out
               <RiArrowRightSLine className="h-4 w-4" />
             </div>
-          </div>
         </Link>
 
         {/* Floating arrows (visible only on hover on desktop) */}

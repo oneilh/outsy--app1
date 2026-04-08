@@ -25,7 +25,6 @@ import {
   RiBookmarkFill,
   RiCheckLine,
   RiCloseLine,
-  RiVerifiedBadgeFill,
   RiTimerFlashLine,
   RiStarFill,
 } from "react-icons/ri";
@@ -201,16 +200,10 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
   const { isSaved, toggleSave } = useSavedSpots();
   const why = generateWhyPicked(spot, filters);
 
-  const BUDGET_COLOR: Record<string, string> = {
-    budget: "bg-green-100 text-green-700",
-    mid: "bg-amber-100 text-amber-700",
-    splurge: "bg-primary/10 text-primary",
-  };
-
-  const BUDGET_LABELS: Record<string, string> = {
-    budget: "Budget",
-    mid: "Mid-range",
-    splurge: "Splurge",
+  const BUDGET_SYMBOLS: Record<string, string> = {
+    budget: "₦",
+    mid: "₦₦",
+    splurge: "₦₦₦",
   };
 
   return (
@@ -248,13 +241,6 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
           )}
         </div>
 
-        {/* Budget */}
-        <div className="absolute top-3 right-3">
-          <span className={`text-[11px] font-bold px-2 py-1 rounded-full ${BUDGET_COLOR[spot.budgetTier] ?? "bg-muted text-muted-foreground shadow-sm"}`}>
-            {BUDGET_LABELS[spot.budgetTier]}
-          </span>
-        </div>
-
         {/* Save button */}
         <button
           onClick={(e) => { e.preventDefault(); toggleSave(spot.id); }}
@@ -270,19 +256,18 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
       {/* Info */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <Link href={`/spots/${spot.slug}`} className="flex items-center gap-1 group/title">
-            <h3 className="font-bold text-base text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
+          <Link href={`/spots/${spot.slug}`}>
+            <h3 className="font-bold text-base text-foreground hover:text-primary transition-colors line-clamp-1">
               {spot.name}
             </h3>
-            {spot.isVerified && (
-              <RiVerifiedBadgeFill className="h-4 w-4 text-blue-500 shrink-0" />
-            )}
           </Link>
         </div>
 
-        <div className="flex items-center gap-1 text-muted-foreground mb-2">
+        <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
           <RiMapPinLine className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-xs">{spot.area}, {spot.city}</span>
+          <span className="text-xs">{spot.area}</span>
+          <span className="text-muted-foreground/30">·</span>
+          <span className="text-xs font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
         </div>
 
         {why && (
