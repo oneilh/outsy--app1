@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pick-1",
+    "spotId": "spot-nok-1",
+    "weekStartDate": "2026-04-06T00:00:00Z",
+    "order": 1
+  },
+  {
+    "id": "pick-2",
+    "spotId": "spot-upbeat-1",
+    "weekStartDate": "2026-04-06T00:00:00Z",
+    "order": 2
+  },
+  {
+    "id": "pick-3",
+    "spotId": "spot-sailors-1",
+    "weekStartDate": "2026-04-06T00:00:00Z",
+    "order": 3
+  },
+  {
+    "id": "pick-4",
+    "spotId": "spot-wakepark-1",
+    "weekStartDate": "2026-04-06T00:00:00Z",
+    "order": 4
+  },
+  {
+    "id": "pick-5",
+    "spotId": "spot-shiro-1",
+    "weekStartDate": "2026-04-06T00:00:00Z",
+    "order": 5
+  }
+]

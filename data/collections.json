@@ -1,0 +1,110 @@
+[
+  {
+    "id": "col-eating-1",
+    "name": "Eating",
+    "slug": "eating",
+    "description": "The best places to grab a bite in Lagos — from street food to fine dining.",
+    "coverImage": "https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=1470&auto=format&fit=crop",
+    "type": "category",
+    "spotIds": ["spot-nok-1", "spot-shiro-1", "spot-bungalow-1", "spot-mama-1", "spot-sky-1", "spot-yellowchilli-1", "spot-ariya-1"]
+  },
+  {
+    "id": "col-drinking-1",
+    "name": "Drinking",
+    "slug": "drinking",
+    "description": "Bars, lounges, and spots to knock back something cold in Lagos.",
+    "coverImage": "https://images.unsplash.com/photo-1470337458703-4f5afd527eca?q=80&w=1470&auto=format&fit=crop",
+    "type": "category",
+    "spotIds": ["spot-mood-1", "spot-hardrock-1", "spot-sailors-1", "spot-crafthouse-1"]
+  },
+  {
+    "id": "col-outdoors-1",
+    "name": "Outdoors",
+    "slug": "outdoors",
+    "description": "Get outside. Lagos has more green and blue than you think.",
+    "coverImage": "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1470&auto=format&fit=crop",
+    "type": "category",
+    "spotIds": ["spot-lcc-1", "spot-nike-1", "spot-tarkwa-1", "spot-terra-1"]
+  },
+  {
+    "id": "col-activities-1",
+    "name": "Activities",
+    "slug": "activities",
+    "description": "Stop scrolling and start doing. Lagos has things to actually do.",
+    "coverImage": "https://images.unsplash.com/photo-1518664188358-1fb689f280ce?q=80&w=1471&auto=format&fit=crop",
+    "type": "category",
+    "spotIds": ["spot-upbeat-1", "spot-wakepark-1", "spot-escape-1"]
+  },
+  {
+    "id": "col-chill-1",
+    "name": "Chill Spots",
+    "slug": "chill-spots",
+    "description": "No drama. Just good vibes, relaxed settings, and nowhere to be.",
+    "coverImage": "https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=1470&auto=format&fit=crop",
+    "type": "mood",
+    "spotIds": ["spot-bogobiri-1", "spot-rustic-1", "spot-highcup-1", "spot-bungalow-1", "spot-sailors-1"]
+  },
+  {
+    "id": "col-party-1",
+    "name": "Party Mode",
+    "slug": "party-mode",
+    "description": "Turn up. These spots know how to throw it down.",
+    "coverImage": "https://images.unsplash.com/photo-1504609813442-a8924e83f76e?q=80&w=1470&auto=format&fit=crop",
+    "type": "mood",
+    "spotIds": ["spot-quilox-1", "spot-club57-1", "spot-sky-1", "spot-mood-1"]
+  },
+  {
+    "id": "col-datenight-1",
+    "name": "Date Night",
+    "slug": "date-night",
+    "description": "Impress your partner. These spots set the right mood.",
+    "coverImage": "https://images.unsplash.com/photo-1514361892635-6b07e31e75f9?q=80&w=1470&auto=format&fit=crop",
+    "type": "mood",
+    "spotIds": ["spot-nok-1", "spot-shiro-1", "spot-mood-1", "spot-george-1", "spot-bungalow-1"]
+  },
+  {
+    "id": "col-friends-1",
+    "name": "With Friends",
+    "slug": "with-friends",
+    "description": "Group-friendly spots where everyone has a great time.",
+    "coverImage": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1469&auto=format&fit=crop",
+    "type": "who",
+    "spotIds": ["spot-upbeat-1", "spot-escape-1", "spot-tarkwa-1", "spot-hardrock-1", "spot-wakepark-1", "spot-ariya-1"]
+  },
+  {
+    "id": "col-couples-1",
+    "name": "Couples",
+    "slug": "couples",
+    "description": "Just the two of you. These spots make it memorable.",
+    "coverImage": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=1470&auto=format&fit=crop",
+    "type": "who",
+    "spotIds": ["spot-george-1", "spot-wheatbaker-1", "spot-bogobiri-1", "spot-sailors-1", "spot-nok-1"]
+  },
+  {
+    "id": "col-solo-1",
+    "name": "Solo Trip",
+    "slug": "solo-trip",
+    "description": "Going alone? These spots are perfect for solo explorers.",
+    "coverImage": "https://images.unsplash.com/photo-1499084732479-de2c02d45fcc?q=80&w=1470&auto=format&fit=crop",
+    "type": "who",
+    "spotIds": ["spot-nike-1", "spot-lcc-1", "spot-rustic-1", "spot-highcup-1", "spot-bogobiri-1", "spot-terra-1"]
+  },
+  {
+    "id": "col-hidden-1",
+    "name": "Hidden Gems",
+    "slug": "hidden-gems",
+    "description": "Spots mostly only locals know about. Keep these to yourself.",
+    "coverImage": "https://images.unsplash.com/photo-1563261642-49392eabc065?q=80&w=1470&auto=format&fit=crop",
+    "type": "curated",
+    "spotIds": ["spot-nike-1", "spot-bogobiri-1", "spot-ariya-1", "spot-crafthouse-1", "spot-wheatbaker-1"]
+  },
+  {
+    "id": "col-newspots-1",
+    "name": "Just Added",
+    "slug": "just-added",
+    "description": "Fresh spots on Outsy — be among the first to check them out.",
+    "coverImage": "https://images.unsplash.com/photo-1551218808-94e220e084d2?q=80&w=1474&auto=format&fit=crop",
+    "type": "curated",
+    "spotIds": ["spot-sky-1", "spot-rustic-1", "spot-highcup-1", "spot-escape-1", "spot-mood-1"]
+  }
+]
