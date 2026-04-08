@@ -198,7 +198,13 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
                 <span className="text-[10px] font-bold text-white uppercase">{currentSpot.area}</span>
               </div>
               <div className="flex items-center gap-1 bg-white/10 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10">
-                <span className="text-[10px] font-bold text-white uppercase">{currentSpot.priceRange.split(' ')[0]}</span>
+                <span className="text-[10px] font-bold text-white uppercase">
+                  {currentSpot.budgetTier === "budget" 
+                    ? "Budget" 
+                    : currentSpot.budgetTier === "mid" 
+                    ? "Mid-range" 
+                    : "Splurge"}
+                </span>
               </div>
             </div>
             

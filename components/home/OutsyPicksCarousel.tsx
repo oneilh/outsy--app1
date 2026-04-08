@@ -69,23 +69,20 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Pick badge */}
+              {/* Budget Tier Badge */}
               <div className="absolute top-3 left-3">
-                <span className="badge bg-primary text-white">
-                  Outsy Pick #{index + 1}
-                </span>
-              </div>
-
-              {/* Budget badge */}
-              <div className="absolute top-3 right-3">
-                <span className={`badge ${
+                <span className={`badge shadow-sm ${
                   spot.budgetTier === "budget"
-                    ? "bg-green-500/90 text-white"
+                    ? "bg-green-500 text-white"
                     : spot.budgetTier === "mid"
                     ? "bg-accent text-accent-foreground"
-                    : "bg-secondary/90 text-white"
+                    : "bg-primary text-white"
                 }`}>
-                  {spot.priceRange}
+                  {spot.budgetTier === "budget" 
+                    ? "Budget" 
+                    : spot.budgetTier === "mid" 
+                    ? "Mid-range" 
+                    : "Splurge"}
                 </span>
               </div>
 

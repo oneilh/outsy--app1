@@ -56,7 +56,6 @@ const TRENDING_REASONS: Record<string, string[]> = {
 };
 
 function getTrendingReason(spot: Spot): string {
-  if (spot.isOutsyPick) return "Official Outsy Pick";
   if (spot.isNew) return "New & already making noise";
   
   const reasons = TRENDING_REASONS[spot.category] || ["A crowd favourite"];
@@ -68,6 +67,12 @@ const BUDGET_DOT: Record<string, string> = {
   budget: "bg-green-400",
   mid: "bg-accent",
   splurge: "bg-primary",
+};
+
+const BUDGET_LABELS: Record<string, string> = {
+  budget: "Budget",
+  mid: "Mid-range",
+  splurge: "Splurge",
 };
 
 export function TrendingSection({ spots }: TrendingSectionProps) {
@@ -138,7 +143,7 @@ export function TrendingSection({ spots }: TrendingSectionProps) {
                 <span
                   className={`h-1.5 w-1.5 rounded-full shrink-0 ${BUDGET_DOT[spot.budgetTier] ?? "bg-muted"}`}
                 />
-                <span className="text-xs font-medium">{spot.priceRange.split(' - ')[0]}</span>
+                <span className="text-xs font-medium">{BUDGET_LABELS[spot.budgetTier]}</span>
               </div>
 
               {/* Trending reason pill */}

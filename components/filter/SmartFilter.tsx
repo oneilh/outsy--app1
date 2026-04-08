@@ -162,7 +162,6 @@ function generateWhyPicked(spot: Spot, filters: FilterState): string {
   }
 
   if (spot.isFeatured) parts.push("Outsy Featured");
-  if (spot.isOutsyPick) parts.push("Outsy Pick");
 
   if (parts.length === 0 && spot.vibeTags[0]) {
     const tag = spot.vibeTags[0].replace(/-/g, " ");
@@ -182,6 +181,12 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
     budget: "bg-green-100 text-green-700",
     mid: "bg-amber-100 text-amber-700",
     splurge: "bg-primary/10 text-primary",
+  };
+
+  const BUDGET_LABELS: Record<string, string> = {
+    budget: "Budget",
+    mid: "Mid-range",
+    splurge: "Splurge",
   };
 
   return (
@@ -205,7 +210,7 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
         {/* Budget */}
         <div className="absolute top-3 right-3">
           <span className={`text-[11px] font-bold px-2 py-1 rounded-full ${BUDGET_COLOR[spot.budgetTier] ?? "bg-muted text-muted-foreground"}`}>
-            {spot.priceRange}
+            {BUDGET_LABELS[spot.budgetTier]}
           </span>
         </div>
 
