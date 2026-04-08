@@ -22,7 +22,7 @@ const CATEGORIES = [
 type CategoryId = (typeof CATEGORIES)[number]["id"];
 
 interface CategoryFilterProps {
-  onCategoryChange?: (category: CategoryId | null) => void;
+  onCategoryChange?: (category: CategoryId) => void;
 }
 
 export function CategoryFilter({ onCategoryChange }: CategoryFilterProps) {
@@ -30,11 +30,11 @@ export function CategoryFilter({ onCategoryChange }: CategoryFilterProps) {
 
   function handleSelect(id: CategoryId) {
     setActive(id);
-    onCategoryChange?.(id === "all" ? null : id);
+    onCategoryChange?.(id);
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto px-4 lg:px-8 pb-1 scrollbar-none">
+    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
       {CATEGORIES.map(({ id, label, Icon }) => {
         const isActive = active === id;
         return (

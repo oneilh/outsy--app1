@@ -12,7 +12,7 @@ export function CollectionsGrid({ collections }: CollectionsGridProps) {
   const visible = collections.slice(0, 6);
 
   return (
-    <section className="w-full px-4 lg:px-8">
+    <section className="w-full">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <RiGridLine className="h-5 w-5 text-secondary" />

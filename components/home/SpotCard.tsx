@@ -19,17 +19,18 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 interface SpotCardProps {
   spot: Spot;
+  trendingReason?: string;
 }
 
-export function SpotCard({ spot }: SpotCardProps) {
+export function SpotCard({ spot, trendingReason }: SpotCardProps) {
   const { isSaved, toggleSave } = useSavedSpots();
 
   return (
     <Link
       href={`/spots/${spot.slug}`}
-      className="block flex-shrink-0 w-44 md:w-52 group"
+      className="block flex-shrink-0 w-44 md:w-auto group"
     >
-      <div className="relative h-36 md:h-40 rounded-xl overflow-hidden mb-2">
+      <div className="relative h-36 md:h-44 rounded-xl overflow-hidden mb-2">
         <Image
           src={spot.images[0]}
           alt={spot.name}
@@ -79,6 +80,13 @@ export function SpotCard({ spot }: SpotCardProps) {
           <RiMapPinLine className="h-3 w-3 flex-shrink-0" />
           <span className="text-xs line-clamp-1">{spot.area}</span>
         </div>
+        {trendingReason && (
+          <div className="mt-1.5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent leading-tight">
+              {trendingReason}
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   );

@@ -14,7 +14,7 @@ interface OutsyPicksCarouselProps {
 export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
   return (
     <section className="w-full">
-      <div className="flex items-center justify-between px-4 mb-3 lg:px-8">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <RiFireLine className="h-5 w-5 text-primary" />
           <h2 className="text-lg font-bold text-foreground">Outsy Picks</h2>
@@ -49,7 +49,7 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
             },
           },
         }}
-        className="px-4 lg:px-8"
+        className=""
         aria-label="Outsy Picks this week"
       >
         {picks.map((spot, index) => (

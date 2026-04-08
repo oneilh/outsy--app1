@@ -79,6 +79,40 @@ export function getFilteredSpots(filters: FilterOptions): Spot[] {
   });
 }
 
+export function getDiscoverSpots(limit: number = 4): {
+  morning: Spot[];
+  afternoon: Spot[];
+  night: Spot[];
+} {
+  const byPopularity = (a: Spot, b: Spot) => b.goingNowCount - a.goingNowCount;
+
+  const morningCats: SpotCategory[] = ["cafe", "eating", "outdoors", "activities"];
+  const afternoonCats: SpotCategory[] = ["activities", "outdoors", "eating", "cafe"];
+  const nightCats: SpotCategory[] = ["nightlife", "drinking", "eating"];
+
+  function pick(cats: SpotCategory[]): Spot[] {
+    const matched = allSpotsAndEvents
+      .filter((s) => cats.includes(s.category))
+      .sort(byPopularity)
+      .slice(0, limit);
+    if (matched.length < limit) {
+      const seen = new Set(matched.map((s) => s.id));
+      const extras = allSpotsAndEvents
+        .filter((s) => !seen.has(s.id))
+        .sort(byPopularity)
+        .slice(0, limit - matched.length);
+      return [...matched, ...extras];
+    }
+    return matched;
+  }
+
+  return {
+    morning: pick(morningCats),
+    afternoon: pick(afternoonCats),
+    night: pick(nightCats),
+  };
+}
+
 export function getRandomSpot(): Spot | undefined {
   if (spots.length === 0) return undefined;
   const randomIndex = Math.floor(Math.random() * spots.length);
@@ -90,6 +124,44 @@ export function getSimilarSpots(spot: Spot, limit: number = 6): Spot[] {
     .filter(s => s.id !== spot.id && s.category === spot.category)
     .sort((a, b) => b.goingNowCount - a.goingNowCount)
     .slice(0, limit);
+}
+
+export function getTimeBasedSpots(limit: number = 4): { label: string; spots: Spot[] } {
+  const hour = new Date().getHours();
+
+  let label: string;
+  let categories: SpotCategory[];
+
+  if (hour >= 6 && hour < 12) {
+    label = "Good for this morning";
+    categories = ["cafe", "eating"];
+  } else if (hour >= 12 && hour < 17) {
+    label = "Good for this afternoon";
+    categories = ["activities", "outdoors", "eating"];
+  } else if (hour >= 17 && hour < 21) {
+    label = "Good for this evening";
+    categories = ["eating", "drinking", "cafe"];
+  } else {
+    label = "Good for tonight";
+    categories = ["nightlife", "drinking", "eating"];
+  }
+
+  const matched = allSpotsAndEvents
+    .filter((s) => categories.includes(s.category))
+    .sort((a, b) => b.goingNowCount - a.goingNowCount)
+    .slice(0, limit);
+
+  // fallback: if not enough category matches, pad with trending
+  if (matched.length < limit) {
+    const ids = new Set(matched.map((s) => s.id));
+    const extras = allSpotsAndEvents
+      .filter((s) => !ids.has(s.id))
+      .sort((a, b) => b.goingNowCount - a.goingNowCount)
+      .slice(0, limit - matched.length);
+    return { label, spots: [...matched, ...extras] };
+  }
+
+  return { label, spots: matched };
 }
 
 export function searchSpots(query: string): Spot[] {
