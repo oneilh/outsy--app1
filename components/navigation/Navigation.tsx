@@ -24,6 +24,11 @@ const NAV_ITEMS = [
 export function Navigation() {
   const pathname = usePathname();
 
+  // Don't show navigation on the filter page to keep the experience focused
+  if (pathname.startsWith("/filter")) {
+    return null;
+  }
+
   return (
     <>
       {/* ── Desktop top nav ─────────────────────────────────────────── */}
