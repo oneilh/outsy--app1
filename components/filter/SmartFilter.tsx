@@ -25,6 +25,9 @@ import {
   RiBookmarkFill,
   RiCheckLine,
   RiCloseLine,
+  RiVerifiedBadgeFill,
+  RiTimerFlashLine,
+  RiStarFill,
 } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { useSavedSpots } from "@/lib/hooks/useSavedSpots";
@@ -211,7 +214,7 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden group">
+    <div className={`rounded-2xl border border-border bg-card overflow-hidden group transition-all duration-300 ${spot.isFeatured ? "ring-2 ring-primary/20 shadow-xl" : ""}`}>
       {/* Image */}
       <Link href={`/spots/${spot.slug}`} className="block relative h-44 md:h-52 overflow-hidden">
         <Image
@@ -223,14 +226,31 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
 
-        {/* Rank badge */}
-        <div className="absolute top-3 left-3 h-7 w-7 rounded-full bg-primary flex items-center justify-center">
-          <span className="text-white text-xs font-bold">{rank}</span>
+        {/* Special Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {/* Rank badge */}
+          <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shadow-lg">
+            <span className="text-white text-xs font-bold">{rank}</span>
+          </div>
+          
+          {spot.isNew && (
+            <div className="flex items-center gap-1.5 bg-green-500 text-white px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight shadow-lg">
+              <RiTimerFlashLine className="h-3 w-3" />
+              New
+            </div>
+          )}
+          
+          {spot.isFeatured && (
+            <div className="flex items-center gap-1.5 bg-accent text-accent-foreground px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight shadow-lg">
+              <RiStarFill className="h-3 w-3" />
+              Featured
+            </div>
+          )}
         </div>
 
         {/* Budget */}
         <div className="absolute top-3 right-3">
-          <span className={`text-[11px] font-bold px-2 py-1 rounded-full ${BUDGET_COLOR[spot.budgetTier] ?? "bg-muted text-muted-foreground"}`}>
+          <span className={`text-[11px] font-bold px-2 py-1 rounded-full ${BUDGET_COLOR[spot.budgetTier] ?? "bg-muted text-muted-foreground shadow-sm"}`}>
             {BUDGET_LABELS[spot.budgetTier]}
           </span>
         </div>
@@ -250,10 +270,13 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
       {/* Info */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <Link href={`/spots/${spot.slug}`}>
-            <h3 className="font-bold text-base text-foreground hover:text-primary transition-colors">
+          <Link href={`/spots/${spot.slug}`} className="flex items-center gap-1 group/title">
+            <h3 className="font-bold text-base text-foreground group-hover/title:text-primary transition-colors line-clamp-1">
               {spot.name}
             </h3>
+            {spot.isVerified && (
+              <RiVerifiedBadgeFill className="h-4 w-4 text-blue-500 shrink-0" />
+            )}
           </Link>
         </div>
 

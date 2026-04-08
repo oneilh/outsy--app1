@@ -2,7 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { RiMapPinLine, RiGroupLine, RiAddLine, RiCheckLine } from "react-icons/ri";
+import { 
+  RiMapPinLine, 
+  RiGroupLine, 
+  RiAddLine, 
+  RiCheckLine, 
+  RiVerifiedBadgeFill, 
+  RiTimerFlashLine, 
+  RiStarFill,
+  RiHeartFill
+} from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { useCompare } from "@/lib/context/CompareContext";
 
@@ -51,16 +60,41 @@ export function SpotGrid({ spots }: SpotGridProps) {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
-                {/* Category chip */}
-                <span className="absolute top-2 left-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-black/50 text-white backdrop-blur-sm">
-                  {CATEGORY_LABELS[spot.category] ?? spot.category}
-                </span>
+                {/* Badges Overlay */}
+                <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
+                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-black/60 text-white backdrop-blur-sm">
+                    {CATEGORY_LABELS[spot.category] ?? spot.category}
+                  </span>
+                  
+                  {spot.isNew && (
+                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
+                      <RiTimerFlashLine className="h-2.5 w-2.5" />
+                      New
+                    </span>
+                  )}
+                  
+                  {spot.isFeatured && (
+                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+                      <RiStarFill className="h-2.5 w-2.5" />
+                      Spotlight
+                    </span>
+                  )}
+                </div>
+
+                {/* Indicators Overlay */}
+                <div className="absolute bottom-2 left-2 flex gap-1">
+                  {spot.isOutsyPick && (
+                    <div className="flex items-center justify-center bg-primary text-white p-1 rounded-full shadow-lg" title="Outsy Pick">
+                      <RiHeartFill className="h-3 w-3" />
+                    </div>
+                  )}
+                </div>
 
                 {/* Going now */}
                 {spot.goingNowCount > 0 && (
-                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-primary/90 rounded-full px-2 py-0.5">
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5">
                     <RiGroupLine className="h-3 w-3 text-white" />
                     <span className="text-[10px] font-bold text-white">{spot.goingNowCount}</span>
                   </div>
@@ -69,9 +103,14 @@ export function SpotGrid({ spots }: SpotGridProps) {
 
               {/* Info */}
               <div className="p-3">
-                <h3 className="font-semibold text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                  {spot.name}
-                </h3>
+                <div className="flex items-center gap-1 min-w-0">
+                  <h3 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                    {spot.name}
+                  </h3>
+                  {spot.isVerified && (
+                    <RiVerifiedBadgeFill className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  )}
+                </div>
                 <div className="flex items-center justify-between mt-1">
                   <div className="flex items-center gap-1 text-muted-foreground min-w-0">
                     <RiMapPinLine className="h-3 w-3 flex-shrink-0" />

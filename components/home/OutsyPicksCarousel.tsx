@@ -4,7 +4,7 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import Image from "next/image";
 import Link from "next/link";
-import { RiMapPinLine, RiFireLine } from "react-icons/ri";
+import { RiMapPinLine, RiFireLine, RiVerifiedBadgeFill, RiTimerFlashLine, RiStarFill } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 
 interface OutsyPicksCarouselProps {
@@ -70,8 +70,8 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
               {/* Budget Tier Badge */}
-              <div className="absolute top-3 left-3">
-                <span className={`badge shadow-sm ${
+              <div className="absolute top-3 left-3 flex flex-col gap-2">
+                <span className={`badge shadow-lg ${
                   spot.budgetTier === "budget"
                     ? "bg-green-500 text-white"
                     : spot.budgetTier === "mid"
@@ -84,13 +84,32 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
                     ? "Mid-range" 
                     : "Splurge"}
                 </span>
+
+                {spot.isNew && (
+                  <span className="badge bg-green-500 text-white shadow-lg flex items-center gap-1">
+                    <RiTimerFlashLine className="h-3 w-3" />
+                    New
+                  </span>
+                )}
+                
+                {spot.isFeatured && (
+                  <span className="badge bg-accent text-accent-foreground shadow-lg flex items-center gap-1">
+                    <RiStarFill className="h-3 w-3" />
+                    Spotlight
+                  </span>
+                )}
               </div>
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h3 className="text-white font-bold text-xl leading-tight mb-1">
-                  {spot.name}
-                </h3>
+                <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                  <h3 className="text-white font-bold text-xl leading-tight truncate">
+                    {spot.name}
+                  </h3>
+                  {spot.isVerified && (
+                    <RiVerifiedBadgeFill className="h-5 w-5 text-blue-400 shrink-0" />
+                  )}
+                </div>
                 <div className="flex items-center gap-1 text-white/80 text-sm mb-2">
                   <RiMapPinLine className="h-4 w-4 flex-shrink-0" />
                   <span>{spot.area}</span>
