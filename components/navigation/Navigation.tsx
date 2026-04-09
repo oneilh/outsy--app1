@@ -13,6 +13,8 @@ import {
   RiBookmarkFill,
   RiInformationLine,
   RiInformationFill,
+  RiCompass3Line,
+  RiCompass3Fill,
 } from "react-icons/ri";
 import { ReportIssueModal } from "@/components/spots/ReportIssueModal";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,7 @@ import { RiFlagLine } from "react-icons/ri";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", IconOutline: RiHome5Line, IconFill: RiHome5Fill },
+  { name: "Spots", href: "/spots", IconOutline: RiCompass3Line, IconFill: RiCompass3Fill },
   { name: "Collections", href: "/collections", IconOutline: RiGridLine, IconFill: RiGridFill },
   { name: "Saved", href: "/saved", IconOutline: RiBookmarkLine, IconFill: RiBookmarkFill },
   { name: "About", href: "/about", IconOutline: RiInformationLine, IconFill: RiInformationFill },
@@ -62,7 +65,7 @@ export function Navigation() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       isActive
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -85,7 +88,7 @@ export function Navigation() {
               variant="ghost" 
               size="sm" 
               onClick={() => setReportModalOpen(true)}
-              className="text-muted-foreground hover:text-foreground rounded-full gap-2 px-4"
+              className="text-muted-foreground hover:text-foreground rounded-xl gap-2 px-4"
             >
               <RiFlagLine className="h-4 w-4" />
               <span>Report</span>
@@ -112,7 +115,7 @@ export function Navigation() {
                 key={item.name}
                 href={item.href}
                 aria-label={item.name}
-                className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1.5 rounded-full transition-all ${
+                className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-full transition-all ${
                   isActive
                     ? "bg-primary text-white shadow-sm"
                     : "text-muted-foreground hover:text-foreground"

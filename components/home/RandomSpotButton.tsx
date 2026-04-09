@@ -25,7 +25,7 @@ export function RandomSpotButton({ slugs }: RandomSpotButtonProps) {
   return (
     <button
       onClick={handlePick}
-      className="flex items-center gap-2 px-5 py-3 rounded-full bg-secondary text-white font-semibold text-sm shadow-sm hover:bg-secondary/90 active:scale-95 transition-all"
+      className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-secondary text-white font-semibold text-sm shadow-sm hover:bg-secondary/90 active:scale-95 transition-all"
     >
       <RiShuffleLine className={`h-5 w-5 transition-transform ${spinning ? "rotate-180" : ""}`} />
       Pick a spot for me

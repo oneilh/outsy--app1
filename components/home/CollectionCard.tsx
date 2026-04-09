@@ -43,7 +43,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
 
           </div>
           
-          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300">
+          <div className="flex-shrink-0 h-8 w-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:scale-110 transition-all duration-300">
             <RiArrowRightLine className="h-4 w-4 text-white" />
           </div>
         </div>
@@ -51,7 +51,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
 
       {/* Subtle top-right accent */}
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="px-2 py-0.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 text-[9px] font-bold text-white uppercase tracking-tighter">
+        <div className="px-2 py-0.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-[9px] font-bold text-white uppercase tracking-tighter">
           Explore
         </div>
       </div>

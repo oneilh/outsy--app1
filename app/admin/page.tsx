@@ -32,6 +32,9 @@ import {
 import spotsRaw from "@/data/spots.json";
 import collectionsRaw from "@/data/collections.json";
 import reportsRaw from "@/data/reports.json";
+import { updateReportStatus, deleteReport } from "@/app/actions/reports";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Spot = (typeof spotsRaw)[number];
 type Collection = (typeof collectionsRaw)[number];
@@ -87,6 +90,12 @@ const ANALYTICS = {
     { label: "Ikoyi", count: 3200 },
     { label: "Lekki Phase 1", count: 2800 },
     { label: "Ikeja", count: 1100 },
+  ],
+  referrals: [
+    { label: "Direct/WhatsApp", count: 4200, icon: RiShareLine, color: "bg-green-100 text-green-700" },
+    { label: "Instagram Link", count: 3800, icon: RiInstagramLine, color: "bg-pink-100 text-pink-700" },
+    { label: "Google Search", count: 2100, icon: RiGlobalLine, color: "bg-blue-100 text-blue-700" },
+    { label: "TikTok/Reels", count: 1500, icon: RiFireLine, color: "bg-slate-100 text-slate-700" },
   ]
 };
 
@@ -125,16 +134,53 @@ const urgentVerification = spots.filter((s) => getVerificationTier(s.lastVerifie
 const activeBusinesses = BUSINESSES.filter((b) => b.status === "Active").length;
 
 export default function AdminPage() {
-  const [tab, setTab] = useState<Tab>("overview");
-  const [verificationFilter, setVerificationFilter] = useState<"all" | "urgent" | "due" | "pending" | "ok">("all");
+    const [tab, setTab] = useState<Tab>("overview");
+    const [verificationFilter, setVerificationFilter] = useState<"all" | "urgent" | "due" | "pending" | "ok">("all");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("all");
+    const [reportStatusFilter, setReportStatusFilter] = useState<"pending" | "resolved">("pending");
+    const router = useRouter();
 
-  const filteredSpots = useMemo(() => {
-    const sorted = [...spots].sort(
-      (a, b) => daysSince(b.lastVerifiedDate) - daysSince(a.lastVerifiedDate)
-    );
-    if (verificationFilter === "all") return sorted;
-    return sorted.filter((s) => getVerificationTier(s.lastVerifiedDate) === verificationFilter);
-  }, [verificationFilter]);
+    const handleUpdateReport = async (reportId: string, status: Report["status"]) => {
+      const result = await updateReportStatus(reportId, status);
+      if (result.success) {
+        toast.success(`Report ${status === 'resolved' ? 'resolved' : 'dismissed'}`);
+        router.refresh();
+      } else {
+        toast.error("Failed to update report");
+      }
+    };
+
+    const handleDeleteReport = async (reportId: string) => {
+      const result = await deleteReport(reportId);
+      if (result.success) {
+        toast.success("Report deleted");
+        router.refresh();
+      } else {
+        toast.error("Failed to delete report");
+      }
+    };
+
+    const filteredReports = useMemo(() => {
+      return (reportsRaw as Report[]).filter((r) => r.status === reportStatusFilter);
+    }, [reportStatusFilter]);
+
+    const filteredSpotsBySearch = useMemo(() => {
+      return spots.filter(spot => {
+        const matchesSearch = spot.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                             spot.area.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesCategory = categoryFilter === "all" || spot.category === categoryFilter;
+        return matchesSearch && matchesCategory;
+      });
+    }, [searchQuery, categoryFilter]);
+
+    const filteredSpots = useMemo(() => {
+      const sorted = [...spots].sort(
+        (a, b) => daysSince(b.lastVerifiedDate) - daysSince(a.lastVerifiedDate)
+      );
+      if (verificationFilter === "all") return sorted;
+      return sorted.filter((s) => getVerificationTier(s.lastVerifiedDate) === verificationFilter);
+    }, [verificationFilter]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -222,6 +268,30 @@ export default function AdminPage() {
             </button>
           </div>
 
+          <div className="flex flex-col md:flex-row gap-4">
+             <div className="relative flex-1">
+                <RiGridLine className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input 
+                  type="text" 
+                  placeholder="Search spots or areas..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                />
+             </div>
+             <select 
+               value={categoryFilter}
+               onChange={(e) => setCategoryFilter(e.target.value)}
+               className="px-4 py-2.5 rounded-xl border border-border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold min-w-[140px] appearance-none"
+             >
+                <option value="all">All Categories</option>
+                <option value="restaurant">Restaurants</option>
+                <option value="lounge">Lounges</option>
+                <option value="activity">Activities</option>
+                <option value="cafe">Cafes</option>
+             </select>
+          </div>
+
           <div className="rounded-2xl border border-border overflow-hidden bg-card shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -235,7 +305,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {spots.map((spot, i) => (
+                  {filteredSpotsBySearch.map((spot, i) => (
                     <tr key={spot.id} className={`border-b border-border last:border-b-0 hover:bg-muted/30 transition-colors ${i % 2 === 0 ? "" : "bg-muted/10"}`}>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-4">
@@ -381,35 +451,62 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Top Performing Content */}
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-             <h3 className="text-base font-bold text-foreground mb-6">Top Performing Spots</h3>
-             <div className="overflow-x-auto">
-               <table className="w-full text-sm">
-                 <thead>
-                    <tr className="text-muted-foreground text-[11px] font-bold uppercase tracking-wider">
-                       <th className="text-left py-3">Spot Name</th>
-                       <th className="text-center py-3">Views</th>
-                       <th className="text-center py-3">Saves</th>
-                       <th className="text-center py-3">Conversion</th>
-                    </tr>
-                 </thead>
-                 <tbody className="divide-y divide-border">
-                   {ANALYTICS.topSpots.map((spot) => (
-                     <tr key={spot.id}>
-                        <td className="py-4 font-bold text-foreground">{spot.name}</td>
-                        <td className="py-4 text-center font-medium">{spot.views}</td>
-                        <td className="py-4 text-center font-medium">{spot.saves}</td>
-                        <td className="py-4 text-center">
-                          <span className="px-2 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold border border-green-100">
-                            {spot.conversion}
-                          </span>
-                        </td>
-                     </tr>
-                   ))}
-                 </tbody>
-               </table>
-             </div>
+          {/* Top Performing Content & Referral Sources */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+               <h3 className="text-base font-bold text-foreground mb-6">Top Performing Spots</h3>
+               <div className="overflow-x-auto">
+                 <table className="w-full text-sm">
+                   <thead>
+                      <tr className="text-muted-foreground text-[11px] font-bold uppercase tracking-wider">
+                         <th className="text-left py-3">Spot Name</th>
+                         <th className="text-center py-3">Views</th>
+                         <th className="text-center py-3">Saves</th>
+                         <th className="text-center py-3">CVR</th>
+                      </tr>
+                   </thead>
+                   <tbody className="divide-y divide-border">
+                     {ANALYTICS.topSpots.map((spot) => (
+                       <tr key={spot.id}>
+                          <td className="py-4 font-bold text-foreground">{spot.name}</td>
+                          <td className="py-4 text-center font-medium">{spot.views}</td>
+                          <td className="py-4 text-center font-medium">{spot.saves}</td>
+                          <td className="py-4 text-center">
+                            <span className="px-2 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold border border-green-100">
+                              {spot.conversion}
+                            </span>
+                          </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+               </div>
+            </div>
+
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+               <h3 className="text-base font-bold text-foreground mb-6">Where Users Come From</h3>
+               <div className="space-y-4">
+                  {ANALYTICS.referrals.map((ref) => (
+                    <div key={ref.label} className="flex items-center justify-between p-4 rounded-2xl bg-muted/30">
+                       <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl ${ref.color}`}>
+                             <ref.icon className="h-4 w-4" />
+                          </div>
+                          <span className="text-sm font-bold text-foreground">{ref.label}</span>
+                       </div>
+                       <div className="text-right">
+                          <p className="text-sm font-bold">{ref.count.toLocaleString()}</p>
+                          <p className="text-[10px] font-bold text-muted-foreground uppercase opacity-60">Visits</p>
+                       </div>
+                    </div>
+                  ))}
+               </div>
+               <div className="mt-8 p-4 rounded-2xl bg-primary/5 border border-primary/10">
+                  <p className="text-xs font-medium text-primary leading-relaxed">
+                    <span className="font-bold">Growth Insight:</span> WhatsApp sharing is currently the #1 source of repeat traffic. Focus on the &quot;Share List&quot; feature to boost viral loop.
+                  </p>
+               </div>
+            </div>
           </div>
         </div>
       )}
@@ -423,28 +520,44 @@ export default function AdminPage() {
               <p className="text-sm text-muted-foreground">User feedback and data corrections.</p>
             </div>
             <div className="bg-muted p-1 rounded-xl flex">
-               <button className="px-4 py-1.5 rounded-lg text-xs font-bold bg-white shadow-sm">Active</button>
-               <button className="px-4 py-1.5 rounded-lg text-xs font-bold text-muted-foreground">Resolved</button>
+               <button 
+                onClick={() => setReportStatusFilter("pending")}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${reportStatusFilter === "pending" ? "bg-white shadow-sm" : "text-muted-foreground"}`}
+               >
+                 Active
+               </button>
+               <button 
+                onClick={() => setReportStatusFilter("resolved")}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${reportStatusFilter === "resolved" ? "bg-white shadow-sm" : "text-muted-foreground"}`}
+               >
+                 Resolved
+               </button>
             </div>
           </div>
 
-          {reports.length === 0 ? (
+          {filteredReports.length === 0 ? (
             <div className="rounded-3xl border-2 border-dashed border-border p-12 text-center">
                <div className="h-16 w-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                   <RiCheckboxCircleLine className="h-8 w-8 text-muted-foreground" />
                </div>
                <h3 className="text-lg font-bold text-foreground">All Clear!</h3>
-               <p className="text-muted-foreground mt-1">No pending issue reports from users.</p>
+               <p className="text-muted-foreground mt-1">
+                 No {reportStatusFilter} issue reports from users.
+               </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {reports.map((report) => (
+              {filteredReports.map((report) => (
                 <div key={report.id} className="rounded-2xl border border-border bg-card p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-0.5 rounded bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-tighter border border-red-100">
-                          {report.issueType}
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter border ${
+                          report.issueType === 'closed_permanently' ? 'bg-red-50 text-red-700 border-red-100' :
+                          report.issueType === 'incorrect_info' ? 'bg-amber-50 text-amber-700 border-amber-100' :
+                          'bg-blue-50 text-blue-700 border-blue-100'
+                        }`}>
+                          {report.issueType.replace('_', ' ')}
                         </span>
                         <span className="text-xs text-muted-foreground font-medium">#{report.id} · {new Date(report.createdAt).toLocaleDateString()}</span>
                       </div>
@@ -452,12 +565,29 @@ export default function AdminPage() {
                       <p className="text-sm text-muted-foreground mt-1">{report.description}</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <button className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-colors">
-                        Investigate
-                      </button>
-                      <button className="px-4 py-2 rounded-xl bg-muted text-muted-foreground text-xs font-bold hover:bg-muted/80 transition-colors">
-                        Dismiss
-                      </button>
+                      {report.status === 'pending' ? (
+                        <>
+                          <button 
+                            onClick={() => handleUpdateReport(report.id, 'resolved')}
+                            className="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-colors"
+                          >
+                            Resolve
+                          </button>
+                          <button 
+                            onClick={() => handleUpdateReport(report.id, 'ignored')}
+                            className="px-4 py-2 rounded-xl bg-muted text-muted-foreground text-xs font-bold hover:bg-muted/80 transition-colors"
+                          >
+                            Dismiss
+                          </button>
+                        </>
+                      ) : (
+                        <button 
+                          onClick={() => handleDeleteReport(report.id)}
+                          className="px-4 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors"
+                        >
+                          Delete Permanent
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

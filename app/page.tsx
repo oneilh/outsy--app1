@@ -31,13 +31,21 @@ export default function Home() {
               Tell us your vibe — we&apos;ll pick the spot.
             </p>
           </div>
-          <Link
-            href="/filter"
-            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-primary text-white font-bold text-sm hover:bg-primary/90 active:scale-95 transition-all shrink-0 shadow-lg"
-          >
-            Find a spot
-            <RiArrowRightLine className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <Link
+              href="/filter"
+              className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary/90 active:scale-95 transition-all shadow-lg text-center"
+            >
+              Find a spot
+              <RiArrowRightLine className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/spots"
+              className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 text-white font-bold text-sm hover:bg-white/20 active:scale-95 transition-all border border-white/20 text-center"
+            >
+              Browse all
+            </Link>
+          </div>
         </div>
 
         {/* Outsy Picks carousel — full width */}

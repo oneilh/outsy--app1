@@ -130,7 +130,7 @@ export function SpotHero({ spot }: SpotHeroProps) {
 
       {/* Top controls */}
       <div className="absolute top-0 left-0 right-0 z-40 px-6 pt-10">
-        <div className="max-w-2xl mx-auto w-full flex items-center justify-between">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <Link
             href="/"
             className="flex items-center justify-center h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-all shadow-xl border border-white/20 active:scale-90"
@@ -157,37 +157,38 @@ export function SpotHero({ spot }: SpotHeroProps) {
       </div>
 
       {/* Bottom info overlay */}
-      <div className="absolute bottom-0 left-0 right-0 pb-10 z-20 pointer-events-none">
-        <div className="max-w-2xl mx-auto px-6">
+      <div className="absolute bottom-0 left-0 right-0 pb-12 lg:pb-16 z-20 pointer-events-none">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center gap-2 mb-4 pointer-events-auto">
-            <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-primary text-white uppercase tracking-widest border border-white/10 shadow-sm">
+            <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] lg:text-[11px] font-black bg-primary text-white uppercase tracking-[0.2em] border border-white/10 shadow-sm">
               {CATEGORY_LABELS[spot.category] ?? spot.category}
             </span>
             {spot.isNew && (
-              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-accent text-secondary uppercase tracking-widest border border-white/10 shadow-sm">
+              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] lg:text-[11px] font-black bg-accent text-secondary uppercase tracking-[0.2em] border border-white/10 shadow-sm">
                 New
               </span>
             )}
             {spot.isOutsyPick && (
-              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-white text-black uppercase tracking-widest border border-white/10 shadow-sm">
+              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] lg:text-[11px] font-black bg-white text-black uppercase tracking-[0.2em] border border-white/10 shadow-sm">
                 Outsy Pick
               </span>
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.1] mb-3 drop-shadow-2xl">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1] mb-5 drop-shadow-2xl max-w-4xl uppercase tracking-tight">
             {spot.name}
           </h1>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs text-white/90 font-bold flex items-center gap-2 uppercase tracking-[0.1em]">
+            <span className="text-xs md:text-sm text-white/90 font-black flex items-center gap-3 uppercase tracking-[0.15em]">
               <span className="opacity-90">{spot.area}</span>
-              <span className="h-1 w-1 rounded-full bg-accent/60" />
-              <span className="text-accent bg-black/40 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded text-[10px] font-black">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-accent/60" />
+              <span className="text-accent bg-black/40 backdrop-blur-sm border border-white/10 px-3 py-1 rounded-lg text-xs font-black">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
             </span>
           </div>
         </div>
       </div>
+
     </div>
   );
 }

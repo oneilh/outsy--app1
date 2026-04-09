@@ -224,7 +224,7 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
               <span className="text-[10px] font-black text-white">{BUDGET_SYMBOLS[currentSpot.budgetTier]}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-primary font-black text-[10px] uppercase tracking-wider bg-white px-3 py-1.5 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all active:scale-95">
+            <div className="flex items-center gap-1 text-primary font-black text-[10px] uppercase tracking-wider bg-white px-3 py-1.5 rounded-2xl shadow-lg hover:bg-primary hover:text-white transition-all active:scale-95">
               Discover
               <RiArrowRightSLine className="h-3.5 w-3.5" />
             </div>

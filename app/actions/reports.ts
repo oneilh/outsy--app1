@@ -34,3 +34,36 @@ export async function submitReport(formData: {
     return { success: false, error: 'Failed to submit report' };
   }
 }
+
+export async function updateReportStatus(reportId: string, status: IssueReport['status']) {
+  try {
+    const reports: IssueReport[] = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf8'));
+    const index = reports.findIndex(r => r.id === reportId);
+    
+    if (index === -1) return { success: false, error: 'Report not found' };
+    
+    reports[index].status = status;
+    fs.writeFileSync(REPORTS_FILE, JSON.stringify(reports, null, 2));
+    
+    revalidatePath('/admin');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to update report status:', error);
+    return { success: false, error: 'Failed to update report status' };
+  }
+}
+
+export async function deleteReport(reportId: string) {
+  try {
+    const reports: IssueReport[] = JSON.parse(fs.readFileSync(REPORTS_FILE, 'utf8'));
+    const filtered = reports.filter(r => r.id !== reportId);
+    
+    fs.writeFileSync(REPORTS_FILE, JSON.stringify(filtered, null, 2));
+    
+    revalidatePath('/admin');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete report:', error);
+    return { success: false, error: 'Failed to delete report' };
+  }
+}
