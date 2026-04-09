@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
+import { getAllSpots } from "@/lib/data-client";
 import {
   RiRestaurantLine,
   RiDrinksLine,
@@ -303,14 +304,10 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
 }
 
 
-// ── Main component ────────────────────────────────────────────────────────
-
-interface SmartFilterProps {
-  allSpots: Spot[];
-}
-
-export function SmartFilter({ allSpots }: SmartFilterProps) {
+export function SmartFilter() {
   const router = useRouter();
+  const [allSpots, setAllSpots] = useState<Spot[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
     activities: [],
     who: [],
@@ -319,6 +316,15 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
   });
   const [showResults, setShowResults] = useState(false);
   const [shuffleSeed, setShuffleSeed] = useState(0);
+
+  useEffect(() => {
+    async function loadSpots() {
+      const data = await getAllSpots();
+      setAllSpots(data);
+      setLoading(false);
+    }
+    loadSpots();
+  }, []);
 
   // Compute filtered + shuffled results
   const allResults = useMemo(() => runFilter(allSpots, filters), [allSpots, filters, shuffleSeed]);
@@ -363,6 +369,17 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
     clearAll();
     setShowResults(false);
     setShuffleSeed(0);
+  }
+
+  if (loading) {
+    return (
+      <PageContainer className="pt-8 md:pt-12">
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          <p className="text-sm font-black text-muted-foreground uppercase tracking-widest animate-pulse">Finding your vibe...</p>
+        </div>
+      </PageContainer>
+    );
   }
 
   // ── Results view ────────────────────────────────────────────────────

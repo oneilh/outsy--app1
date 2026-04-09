@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { RiSearchLine, RiCloseLine } from "react-icons/ri";
 import posthog from "posthog-js";
 import { SpotGrid } from "@/components/spots/SpotGrid";
 import type { Spot, SpotCategory, BudgetTier } from "@/lib/types";
+import { getAllSpots } from "@/lib/data-client";
 
 const CATEGORIES: { id: SpotCategory | "all"; label: string }[] = [
   { id: "all",        label: "All"        },
@@ -24,16 +25,25 @@ const BUDGETS: { id: BudgetTier | "all"; label: string }[] = [
   { id: "splurge", label: "Splurge ₦₦₦" },
 ];
 
-export default function SpotsPage({ initialSpots }: { initialSpots: Spot[] }) {
-  const ALL_SPOTS = initialSpots;
-
+export default function SpotsPage() {
+  const [allSpots, setAllSpots] = useState<Spot[]>([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery]       = useState("");
   const [category, setCategory] = useState<SpotCategory | "all">("all");
   const [budget, setBudget]     = useState<BudgetTier | "all">("all");
 
+  useEffect(() => {
+    async function loadSpots() {
+      const data = await getAllSpots();
+      setAllSpots(data);
+      setLoading(false);
+    }
+    loadSpots();
+  }, []);
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return ALL_SPOTS.filter((s) => {
+    return allSpots.filter((s) => {
       if (category !== "all" && s.category !== category) return false;
       if (budget   !== "all" && s.budgetTier !== budget)  return false;
       if (q && !(
@@ -44,7 +54,7 @@ export default function SpotsPage({ initialSpots }: { initialSpots: Spot[] }) {
       )) return false;
       return true;
     });
-  }, [query, category, budget]);
+  }, [allSpots, query, category, budget]);
 
   const hasFilters = query !== "" || category !== "all" || budget !== "all";
 
@@ -52,6 +62,17 @@ export default function SpotsPage({ initialSpots }: { initialSpots: Spot[] }) {
     setQuery("");
     setCategory("all");
     setBudget("all");
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          <p className="text-sm font-black text-muted-foreground uppercase tracking-widest animate-pulse">Curation in progress...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

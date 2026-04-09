@@ -62,7 +62,8 @@ export async function getAllSpots(): Promise<Spot[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from('spots')
-    .select('*');
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (error) return [];
   return data.map(mapSpot);

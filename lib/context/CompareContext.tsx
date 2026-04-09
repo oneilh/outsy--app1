@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 
 const MAX_COMPARE = 3;
 
@@ -17,17 +17,38 @@ const CompareContext = createContext<CompareContextValue | null>(null);
 export function CompareProvider({ children }: { children: ReactNode }) {
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
+  useEffect(() => {
+    const stored = localStorage.getItem("outsy-compare");
+    if (stored) {
+      try {
+        setCompareIds(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse compare ids", e);
+      }
+    }
+  }, []);
+
   const isInCompare = useCallback((id: string) => compareIds.includes(id), [compareIds]);
 
   const toggleCompare = useCallback((id: string) => {
     setCompareIds((prev) => {
-      if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= MAX_COMPARE) return prev;
-      return [...prev, id];
+      let next;
+      if (prev.includes(id)) {
+        next = prev.filter((x) => x !== id);
+      } else if (prev.length < MAX_COMPARE) {
+        next = [...prev, id];
+      } else {
+        return prev;
+      }
+      localStorage.setItem("outsy-compare", JSON.stringify(next));
+      return next;
     });
   }, []);
 
-  const clearCompare = useCallback(() => setCompareIds([]), []);
+  const clearCompare = useCallback(() => {
+    setCompareIds([]);
+    localStorage.removeItem("outsy-compare");
+  }, []);
 
   return (
     <CompareContext.Provider
