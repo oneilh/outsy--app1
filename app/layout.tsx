@@ -15,6 +15,10 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Outsy — Open it. Pick a spot. Go out.",
   description: "Curated outing spots in Lagos. No endless scrolling. Find the vibe, price, and location fast.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export const viewport = {
