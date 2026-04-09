@@ -61,6 +61,21 @@ export async function getAllSpots(): Promise<Spot[]> {
   return data.map(mapSpot);
 }
 
+export async function getSpotsByIds(ids: string[]): Promise<Spot[]> {
+  if (!ids.length) return [];
+  const supabase = createStaticClient();
+  const { data, error } = await supabase
+    .from('spots')
+    .select('*')
+    .in('id', ids);
+
+  if (error) {
+    console.error('Error fetching spots by IDs:', error);
+    return [];
+  }
+  return data.map(mapSpot);
+}
+
 export async function getSpotById(id: string): Promise<Spot | undefined> {
   const supabase = createStaticClient();
   const { data, error } = await supabase

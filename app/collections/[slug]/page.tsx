@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { RiArrowLeftLine } from "react-icons/ri";
-import { getCollectionBySlug, getSpotsForCollection, getAllCollections } from "@/lib/data";
+import { getCollectionBySlug, getAllCollections, getSpotsByIds } from "@/lib/data";
 import { SpotGrid } from "@/components/spots/SpotGrid";
 
 interface Props {
@@ -42,7 +42,7 @@ export default async function CollectionDetailPage({ params }: Props) {
   const collection = await getCollectionBySlug(slug);
   if (!collection) notFound();
 
-  const spots = await getSpotsForCollection(slug);
+  const spots = await getSpotsByIds(collection.spotIds);
 
   return (
     <div className="min-h-screen bg-background pb-20">
