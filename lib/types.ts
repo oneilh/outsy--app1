@@ -16,6 +16,7 @@ export interface Spot {
   amenities: string[];
   bestTimeToGo: string;
   images: string[];
+  videoUrl?: string;
   phone: string;
   instagram: string;
   website: string;
@@ -51,4 +52,15 @@ export interface OutsyPick {
   spotId: string;
   weekStartDate: string;
   order: number;
+}
+
+export interface IssueReport {
+  id: string;
+  spotId?: string;
+  spotName?: string;
+  issueType: 'incorrect_info' | 'closed_permanently' | 'wrong_location' | 'bad_link' | 'other';
+  description: string;
+  email?: string;
+  createdAt: string;
+  status: 'pending' | 'resolved' | 'dismissed';
 }

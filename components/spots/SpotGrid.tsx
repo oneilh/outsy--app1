@@ -26,7 +26,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   event: "Event",
 };
 
-const BUDGET_LABELS: Record<string, string> = {
+const BUDGET_SYMBOLS: Record<string, string> = {
   budget: "₦",
   mid: "₦₦",
   splurge: "₦₦₦",
@@ -42,100 +42,92 @@ export function SpotGrid({ spots }: SpotGridProps) {
   if (!spots.length) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
       {spots.map((spot) => {
         const inCompare = isInCompare(spot.id);
         return (
           <div key={spot.id} className="group relative">
             <Link
               href={`/spots/${spot.slug}`}
-              className="block rounded-2xl overflow-hidden bg-card border border-border hover:shadow-md transition-shadow"
+              className="block group"
             >
-              {/* Image */}
-              <div className="relative aspect-[4/3] overflow-hidden">
+              {/* Image Container */}
+              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-3">
                 <Image
                   src={spot.images[0]}
                   alt={spot.name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
 
                 {/* Badges Overlay */}
-                <div className="absolute top-2 left-2 flex flex-col gap-1.5 z-10">
-                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-black/60 text-white backdrop-blur-sm">
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
+                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-black/60 text-white backdrop-blur-md border border-white/10 shadow-sm">
                     {CATEGORY_LABELS[spot.category] ?? spot.category}
                   </span>
                   
-                  {/* Status Badges - Prioritize Special > Spotlight > New to avoid label spam */}
-                  {spot.special ? (
-                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-primary text-white shadow-sm">
-                      <RiFlashlightLine className="h-2.5 w-2.5" />
-                      {spot.special.label}
-                    </span>
-                  ) : spot.isFeatured ? (
-                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
-                      <RiStarFill className="h-2.5 w-2.5" />
-                      Spotlight
-                    </span>
-                  ) : spot.isNew ? (
-                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
-                      <RiTimerFlashLine className="h-2.5 w-2.5" />
-                      New
-                    </span>
-                  ) : null}
+                  <div className="flex items-center gap-1">
+                    {spot.special ? (
+                      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-primary text-white shadow-lg">
+                        <RiFlashlightLine className="h-2.5 w-2.5" />
+                        {spot.special.label}
+                      </span>
+                    ) : spot.isFeatured ? (
+                      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+                        <RiStarFill className="h-2.5 w-2.5" />
+                        Spotlight
+                      </span>
+                    ) : spot.isNew ? (
+                      <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
+                        <RiTimerFlashLine className="h-2.5 w-2.5" />
+                        New
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
 
-                {/* Indicators Overlay */}
-                <div className="absolute bottom-2 left-2 flex gap-1">
-                  {spot.isOutsyPick && (
-                    <div className="flex items-center justify-center bg-primary text-white p-1 rounded-full shadow-lg" title="Outsy Pick">
-                      <RiHeartFill className="h-3 w-3" />
+                {/* Outsy Pick Indicator */}
+                {spot.isOutsyPick && (
+                  <div className="absolute bottom-3 left-3 z-10">
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/90 backdrop-blur-sm shadow-lg">
+                      <RiHeartFill className="h-2.5 w-2.5 text-primary" />
+                      <span className="text-[10px] font-black uppercase text-primary tracking-tighter">Pick</span>
                     </div>
-                  )}
-                </div>
-
-                {/* Going now */}
-                {spot.goingNowCount > 0 && (
-                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5">
-                    <RiGroupLine className="h-3 w-3 text-white" />
-                    <span className="text-[10px] font-bold text-white">{spot.goingNowCount}</span>
                   </div>
                 )}
               </div>
 
               {/* Info */}
-              <div className="p-3">
-                <div className="min-w-0">
-                  <h3 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                    {spot.name}
-                  </h3>
-                </div>
-                <div className="flex items-center gap-1.5 mt-1.5 text-muted-foreground">
+              <div className="px-1">
+                <h3 className="font-bold text-sm md:text-base text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-300">
+                  {spot.name}
+                </h3>
+                <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
                   <RiMapPinLine className="h-3 w-3 flex-shrink-0" />
                   <span className="text-xs truncate">{spot.area}</span>
                   <span className="text-muted-foreground/30">·</span>
-                  <span className="text-xs font-bold text-foreground/60">{BUDGET_LABELS[spot.budgetTier] ?? ""}</span>
+                  <span className="text-[10px] font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier] ?? "₦"}</span>
                 </div>
               </div>
             </Link>
 
-            {/* Compare toggle */}
+            {/* Compare toggle - Styled more premium */}
             <button
               onClick={() => toggleCompare(spot.id)}
               disabled={!inCompare && maxReached}
-              className={`absolute top-2 right-2 flex items-center justify-center h-7 w-7 rounded-full backdrop-blur-sm transition-all
+              className={`absolute top-3 right-3 flex items-center justify-center h-8 w-8 rounded-full backdrop-blur-md border transition-all duration-300 z-20
                 ${inCompare
-                  ? "bg-primary text-white opacity-100"
-                  : "bg-black/40 text-white opacity-0 group-hover:opacity-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                  ? "bg-primary border-primary text-white scale-110 shadow-lg"
+                  : "bg-black/30 border-white/20 text-white opacity-0 group-hover:opacity-100 hover:bg-black/50 disabled:opacity-30 disabled:cursor-not-allowed"
                 }`}
               aria-label={inCompare ? "Remove from compare" : "Add to compare"}
             >
               {inCompare ? (
-                <RiCheckLine className="h-3.5 w-3.5" />
+                <RiCheckLine className="h-4 w-4" />
               ) : (
-                <RiAddLine className="h-3.5 w-3.5" />
+                <RiAddLine className="h-4 w-4" />
               )}
             </button>
           </div>

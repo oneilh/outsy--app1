@@ -31,24 +31,30 @@ export default function CollectionsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Page header */}
-      <div className="px-4 lg:px-8 pt-8 pb-4">
-        <h1 className="text-2xl font-bold text-foreground">Collections</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Curated spots for every mood, occasion, and crew.
+      <div className="px-4 lg:px-8 pt-10 pb-6">
+        <h1 className="text-3xl font-black text-foreground tracking-tight">
+          Collections
+        </h1>
+        <p className="text-muted-foreground text-sm mt-1.5 max-w-md font-medium">
+          Hand-picked lists of the best spots in Lagos, curated for every mood, crew, and occasion.
         </p>
       </div>
 
       {/* Grouped sections */}
-      <div className="px-4 lg:px-8 pb-10 space-y-10">
+      <div className="px-4 lg:px-8 pb-16 space-y-12">
         {TYPE_ORDER.map((type) => {
           const group = grouped[type];
           if (!group.length) return null;
           return (
-            <section key={type}>
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                {TYPE_LABELS[type]}
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <section key={type} className="relative">
+              <div className="flex items-center gap-4 mb-5">
+                <h2 className="text-xs font-black text-foreground/40 uppercase tracking-[0.2em] whitespace-nowrap">
+                  {TYPE_LABELS[type]}
+                </h2>
+                <div className="h-[1px] w-full bg-linear-to-r from-border/50 to-transparent" />
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
                 {group.map((collection) => (
                   <CollectionCard key={collection.id} collection={collection} />
                 ))}
@@ -60,3 +66,4 @@ export default function CollectionsPage() {
     </div>
   );
 }
+

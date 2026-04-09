@@ -137,29 +137,33 @@ export function TrendingSection({ spots }: TrendingSectionProps) {
                 <span className="text-xs font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
               </div>
 
-              {/* Status/Trending reason pill */}
-              <div className="mt-2 flex flex-wrap gap-2">
+              {/* Status/Trending reason pill - Tightened horizontal layout */}
+              <div className="mt-2.5 flex flex-wrap gap-1.5 items-center">
                 {spot.special ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-primary/10 border border-primary/20 px-2 py-0.5 text-[10px] font-black text-primary uppercase tracking-tight">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[9px] font-black text-primary uppercase tracking-tight shadow-sm">
                     <RiFlashlightLine className="h-2.5 w-2.5" />
                     {spot.special.label}
                   </span>
                 ) : spot.isFeatured ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-accent/10 border border-accent/20 px-2 py-0.5 text-[10px] font-black text-accent uppercase tracking-tight">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 border border-accent/20 px-2 py-0.5 text-[9px] font-black text-accent uppercase tracking-tight shadow-sm">
                     <RiStarFill className="h-2.5 w-2.5" />
                     Spotlight
                   </span>
                 ) : spot.isNew ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[10px] font-black text-green-600 uppercase tracking-tight">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/20 px-2 py-0.5 text-[9px] font-black text-green-600 uppercase tracking-tight shadow-sm">
                     <RiTimerFlashLine className="h-2.5 w-2.5" />
                     New
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-accent/5 border border-accent/10 px-2 py-0.5 text-[10px] font-bold text-accent uppercase tracking-tight">
-                    {getTrendingReason(spot)}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-1 w-1 rounded-full bg-accent/30" />
+                    <span className="text-[10px] font-bold text-accent/80 uppercase tracking-widest leading-none">
+                      {getTrendingReason(spot)}
+                    </span>
+                  </div>
                 )}
               </div>
+
             </div>
 
             <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity pr-2">

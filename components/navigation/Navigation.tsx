@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import {
   RiHome5Line,
   RiHome5Fill,
@@ -13,6 +14,9 @@ import {
   RiInformationLine,
   RiInformationFill,
 } from "react-icons/ri";
+import { ReportIssueModal } from "@/components/spots/ReportIssueModal";
+import { Button } from "@/components/ui/button";
+import { RiFlagLine } from "react-icons/ri";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/", IconOutline: RiHome5Line, IconFill: RiHome5Fill },
@@ -23,6 +27,7 @@ const NAV_ITEMS = [
 
 export function Navigation() {
   const pathname = usePathname();
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   // Don't show navigation on the filter page to keep the experience focused
   if (pathname.startsWith("/filter")) {
@@ -47,33 +52,53 @@ export function Navigation() {
           </Link>
 
           {/* Nav links */}
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {isActive ? (
-                    <item.IconFill className="h-4 w-4" />
-                  ) : (
-                    <item.IconOutline className="h-4 w-4" />
-                  )}
-                  {item.name}
-                </Link>
-              );
-            })}
+          <nav className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {NAV_ITEMS.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {isActive ? (
+                      <item.IconFill className="h-4 w-4" />
+                    ) : (
+                      <item.IconOutline className="h-4 w-4" />
+                    )}
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+            
+            <div className="h-4 w-px bg-border mx-1" />
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setReportModalOpen(true)}
+              className="text-muted-foreground hover:text-foreground rounded-full gap-2 px-4"
+            >
+              <RiFlagLine className="h-4 w-4" />
+              <span>Report</span>
+            </Button>
           </nav>
         </div>
       </header>
+      
+      <ReportIssueModal 
+        isOpen={reportModalOpen} 
+        onClose={() => setReportModalOpen(false)} 
+        spotName="Outsy" 
+      />
 
       {/* ── Mobile floating bottom nav ──────────────────────────────── */}
       <div className="md:hidden fixed bottom-5 left-0 right-0 z-50 flex justify-center px-6">

@@ -207,86 +207,99 @@ function ResultCard({ spot, filters, rank }: { spot: Spot; filters: FilterState;
   };
 
   return (
-    <div className={`rounded-2xl border border-border bg-card overflow-hidden group transition-all duration-300 ${spot.isFeatured ? "ring-2 ring-primary/20 shadow-xl" : ""}`}>
+    <div className={`rounded-3xl border border-border/50 bg-card overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:border-primary/30 ${spot.isFeatured ? "ring-2 ring-primary/20 shadow-xl" : "shadow-sm"}`}>
       {/* Image */}
-      <Link href={`/spots/${spot.slug}`} className="block relative h-44 md:h-52 overflow-hidden">
+      <Link href={`/spots/${spot.slug}`} className="block relative h-48 md:h-56 overflow-hidden">
         <Image
           src={spot.images[0]}
           alt={spot.name}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
 
-        {/* Special Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        {/* Status Badges - Tightened Grouping */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
           {/* Rank badge */}
-          <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center shadow-lg">
-            <span className="text-white text-xs font-bold">{rank}</span>
+          <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-lg border border-white/20">
+            <span className="text-white text-[10px] font-black">{rank}</span>
           </div>
           
-          {spot.isNew && (
-            <div className="flex items-center gap-1.5 bg-green-500 text-white px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight shadow-lg">
-              <RiTimerFlashLine className="h-3 w-3" />
-              New
-            </div>
-          )}
-          
-          {spot.isFeatured && (
-            <div className="flex items-center gap-1.5 bg-accent text-accent-foreground px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight shadow-lg">
-              <RiStarFill className="h-3 w-3" />
-              Featured
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            {spot.isNew && (
+              <div className="flex items-center gap-1 bg-green-500/90 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tight shadow-sm">
+                <RiTimerFlashLine className="h-2.5 w-2.5" />
+                New
+              </div>
+            )}
+            
+            {spot.isFeatured && (
+              <div className="flex items-center gap-1 bg-accent/90 backdrop-blur-sm text-accent-foreground px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tight shadow-sm">
+                <RiStarFill className="h-2.5 w-2.5" />
+                Featured
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Save button */}
         <button
           onClick={(e) => { e.preventDefault(); toggleSave(spot.id); }}
-          className="absolute bottom-3 right-3 h-8 w-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+          className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-primary transition-all active:scale-90"
           aria-label={isSaved(spot.id) ? "Remove from saved" : "Save"}
         >
           {isSaved(spot.id)
             ? <RiBookmarkFill className="h-4 w-4 text-accent" />
             : <RiBookmarkLine className="h-4 w-4" />}
         </button>
+
+        {/* Category Label (floating) */}
+        <div className="absolute bottom-3 left-3">
+          <span className="px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[9px] font-bold text-white uppercase tracking-wider">
+            {spot.category}
+          </span>
+        </div>
       </Link>
 
       {/* Info */}
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-1">
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-2 mb-1.5">
           <Link href={`/spots/${spot.slug}`}>
-            <h3 className="font-bold text-base text-foreground hover:text-primary transition-colors line-clamp-1">
+            <h3 className="font-black text-lg text-foreground hover:text-primary transition-colors line-clamp-1 leading-tight tracking-tight">
               {spot.name}
             </h3>
           </Link>
         </div>
 
-        <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-          <RiMapPinLine className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-xs">{spot.area}</span>
-          <span className="text-muted-foreground/30">·</span>
-          <span className="text-xs font-bold text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
+        <div className="flex items-center gap-2 text-muted-foreground mb-4">
+          <RiMapPinLine className="h-3.5 w-3.5 shrink-0 opacity-70" />
+          <span className="text-xs font-medium">{spot.area}</span>
+          <span className="flex h-1 w-1 rounded-full bg-border" />
+          <span className="text-xs font-black text-foreground/60">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
         </div>
 
         {why && (
-          <p className="text-xs font-medium text-primary bg-primary/8 rounded-full px-3 py-1 inline-block mb-3">
-            {why}
-          </p>
+          <div className="flex items-center gap-2 mb-5">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            <p className="text-xs font-bold text-primary uppercase tracking-widest text-[10px]">
+              {why}
+            </p>
+          </div>
         )}
 
         <Link
           href={`/spots/${spot.slug}`}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-secondary text-white text-sm font-semibold hover:bg-secondary/90 transition-colors"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-secondary text-white text-sm font-black uppercase tracking-widest hover:bg-secondary/90 hover:scale-[1.02] transition-all active:scale-[0.98] shadow-lg shadow-secondary/20"
         >
-          View spot
+          Explore Spot
           <RiArrowRightLine className="h-4 w-4" />
         </Link>
       </div>
     </div>
   );
 }
+
 
 // ── Main component ────────────────────────────────────────────────────────
 

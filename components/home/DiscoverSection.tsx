@@ -191,21 +191,22 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
                 {activeTab} recommendations
               </span>
               {currentSpot.special ? (
-                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-primary text-white shadow-lg">
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-primary text-white shadow-lg border border-primary/20">
                   <RiFlashlightLine className="h-2 w-2" />
                   {currentSpot.special.label}
                 </span>
               ) : currentSpot.isFeatured ? (
-                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-accent/90 backdrop-blur-sm text-accent-foreground shadow-sm border border-accent/20">
                   <RiStarFill className="h-2 w-2" />
                   Spotlight
                 </span>
               ) : currentSpot.isNew ? (
-                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-green-500 text-white shadow-sm">
+                <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-green-500/90 backdrop-blur-sm text-white shadow-sm border border-green-500/20">
                   <RiTimerFlashLine className="h-2 w-2" />
                   New
                 </span>
               ) : null}
+
             </div>
             <h3 className="text-2xl font-black text-white leading-tight drop-shadow-md">
               {currentSpot.name}

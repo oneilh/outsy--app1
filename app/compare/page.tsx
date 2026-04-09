@@ -7,10 +7,10 @@ import { useCompare } from "@/lib/context/CompareContext";
 import { getSpotById } from "@/lib/data";
 import type { Spot } from "@/lib/types";
 
-const BUDGET_LABELS: Record<string, string> = {
-  budget: "Budget-friendly",
-  mid: "Mid-range",
-  splurge: "Splurge",
+const BUDGET_SYMBOLS: Record<string, string> = {
+  budget: "₦",
+  mid: "₦₦",
+  splurge: "₦₦₦",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -24,36 +24,35 @@ const CATEGORY_LABELS: Record<string, string> = {
   event: "Event",
 };
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="grid gap-px" style={{ gridTemplateColumns: "7rem 1fr" }}>
-      <span className="py-3 pr-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide leading-tight self-start pt-3.5">
-        {label}
-      </span>
-      <div className="py-3 border-t border-border">{children}</div>
-    </div>
-  );
-}
-
 function SpotColumn({ spot }: { spot: Spot }) {
   return (
     <div className="flex flex-col min-w-0">
       {/* Image */}
-      <Link href={`/spots/${spot.slug}`} className="block">
-        <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl mb-3">
+      <Link href={`/spots/${spot.slug}`} className="block group">
+        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl mb-3 shadow-sm group-hover:shadow-lg transition-shadow duration-300">
           <Image
             src={spot.images[0]}
             alt={spot.name}
             fill
-            className="object-cover hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, 33vw"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+          
+          <div className="absolute top-2 left-2">
+            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-black/60 text-white backdrop-blur-md border border-white/10 shadow-sm">
+              {CATEGORY_LABELS[spot.category] ?? spot.category}
+            </span>
+          </div>
         </div>
-        <h2 className="font-bold text-base text-foreground line-clamp-2 hover:text-primary transition-colors">
+        <h2 className="font-bold text-sm md:text-base text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
           {spot.name}
         </h2>
       </Link>
-      <p className="text-xs text-muted-foreground mt-0.5 mb-3">{CATEGORY_LABELS[spot.category] ?? spot.category}</p>
+      <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
+        <RiMapPinLine className="h-3 w-3 flex-shrink-0" />
+        <span className="text-[10px] md:text-xs truncate">{spot.area}</span>
+      </div>
     </div>
   );
 }
@@ -64,19 +63,19 @@ export default function ComparePage() {
 
   if (spots.length < 2) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4 text-center">
-        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-muted">
-          <RiArrowLeftLine className="h-7 w-7 text-muted-foreground" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-4 text-center">
+        <div className="flex items-center justify-center h-20 w-20 rounded-full bg-muted shadow-inner">
+          <RiArrowLeftLine className="h-8 w-8 text-muted-foreground" />
         </div>
         <div>
-          <p className="font-semibold text-foreground">Nothing to compare yet</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Select 2–3 spots using the + button on any collection or saved page.
+          <h2 className="text-xl font-bold text-foreground">Nothing to compare yet</h2>
+          <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto">
+            Select 2–3 spots using the + button on any collection or saved page to see them side by side.
           </p>
         </div>
         <Link
           href="/collections"
-          className="mt-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+          className="rounded-full bg-primary px-8 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-all shadow-md hover:shadow-lg active:scale-95"
         >
           Browse Collections
         </Link>
@@ -87,27 +86,27 @@ export default function ComparePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="px-4 lg:px-8 pt-8 pb-4 flex items-center justify-between">
+      <div className="px-4 lg:px-8 pt-8 pb-6 flex items-end justify-between border-b border-border/40">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Compare</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <h1 className="text-3xl font-black text-foreground tracking-tight">Compare</h1>
+          <p className="text-muted-foreground text-sm mt-1 uppercase font-bold tracking-widest text-[10px]">
             {spots.length} spots side by side
           </p>
         </div>
         <button
           onClick={clearCompare}
-          className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+          className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all active:scale-95"
         >
           <RiCloseLine className="h-4 w-4" />
-          Clear
+          CLEAR ALL
         </button>
       </div>
 
       <div className="px-4 lg:px-8 pb-16">
         {/* Spot headers */}
         <div
-          className="grid gap-4 mb-2"
-          style={{ gridTemplateColumns: `7rem repeat(${spots.length}, 1fr)` }}
+          className="grid gap-6 md:gap-8 mb-8 mt-6"
+          style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
         >
           <div /> {/* label column spacer */}
           {spots.map((spot) => (
@@ -118,28 +117,21 @@ export default function ComparePage() {
         {/* Comparison rows */}
         {[
           {
-            label: "Area",
-            render: (s: Spot) => (
-              <div className="flex items-center gap-1 text-sm text-foreground">
-                <RiMapPinLine className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                {s.area}, {s.city}
-              </div>
-            ),
-          },
-          {
             label: "Price",
             render: (s: Spot) => (
               <div>
-                <p className="text-sm font-semibold text-foreground">{s.priceRange}</p>
-                <p className="text-xs text-muted-foreground">{BUDGET_LABELS[s.budgetTier]}</p>
+                <span className="text-xs font-black text-foreground tracking-wide bg-muted px-2 py-0.5 rounded-md">
+                   {BUDGET_SYMBOLS[s.budgetTier]}
+                </span>
+                <p className="text-[10px] text-muted-foreground mt-1 font-medium">{s.priceRange}</p>
               </div>
             ),
           },
           {
             label: "Best Time",
             render: (s: Spot) => (
-              <div className="flex items-center gap-1 text-sm text-foreground">
-                <RiTimeLine className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
+                <RiTimeLine className="h-3.5 w-3.5 text-primary" />
                 {s.bestTimeToGo}
               </div>
             ),
@@ -148,10 +140,10 @@ export default function ComparePage() {
             label: "Vibes",
             render: (s: Spot) => (
               <div className="flex flex-wrap gap-1">
-                {s.vibeTags.slice(0, 4).map((tag) => (
+                {s.vibeTags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-foreground capitalize"
+                    className="inline-block rounded-md bg-secondary/10 px-1.5 py-0.5 text-[9px] font-bold text-secondary uppercase tracking-tighter"
                   >
                     {tag}
                   </span>
@@ -164,47 +156,39 @@ export default function ComparePage() {
             render: (s: Spot) => (
               <div className="flex flex-wrap gap-1">
                 {s.whoItsFor.length > 0
-                  ? s.whoItsFor.map((w) => (
+                  ? s.whoItsFor.slice(0, 2).map((w) => (
                       <span
                         key={w}
-                        className="inline-block rounded-full bg-secondary/10 px-2 py-0.5 text-[10px] font-medium text-secondary capitalize"
+                        className="inline-block rounded-md bg-accent/10 px-1.5 py-0.5 text-[9px] font-bold text-accent uppercase tracking-tighter"
                       >
                         {w}
                       </span>
                     ))
-                  : <span className="text-xs text-muted-foreground">—</span>}
+                  : <span className="text-[10px] text-muted-foreground/40 font-black">—</span>}
               </div>
             ),
           },
           {
-            label: "Verified",
-            render: (s: Spot) =>
-              s.isVerified ? (
-                <RiCheckLine className="h-5 w-5 text-green-500" />
-              ) : (
-                <RiCloseLine className="h-5 w-5 text-muted-foreground" />
-              ),
-          },
-          {
-            label: "Budget",
+            label: "Amenities",
             render: (s: Spot) => (
-              <div className="flex items-center gap-1 text-sm">
-                <RiMoneyDollarCircleLine className="h-4 w-4 text-muted-foreground" />
-                <span className="text-foreground">{s.priceRange}</span>
+              <div className="flex flex-wrap gap-1">
+                {s.amenities.slice(0, 3).map((a) => (
+                  <div key={a} className="h-1.5 w-1.5 rounded-full bg-green-500/50" title={a} />
+                ))}
               </div>
             ),
           },
         ].map(({ label, render }) => (
           <div
             key={label}
-            className="grid gap-4 border-t border-border"
-            style={{ gridTemplateColumns: `7rem repeat(${spots.length}, 1fr)` }}
+            className="grid gap-6 md:gap-8 border-t border-border/40"
+            style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
           >
-            <span className="py-3 pr-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide self-start pt-3.5">
+            <span className="py-5 pr-3 text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-tight self-start">
               {label}
             </span>
             {spots.map((spot) => (
-              <div key={spot.id} className="py-3">
+              <div key={spot.id} className="py-5">
                 {render(spot)}
               </div>
             ))}
@@ -213,17 +197,17 @@ export default function ComparePage() {
 
         {/* View spot CTAs */}
         <div
-          className="grid gap-4 mt-6"
-          style={{ gridTemplateColumns: `7rem repeat(${spots.length}, 1fr)` }}
+          className="grid gap-6 md:gap-8 mt-10"
+          style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
         >
           <div />
           {spots.map((spot) => (
             <Link
               key={spot.id}
               href={`/spots/${spot.slug}`}
-              className="block rounded-xl bg-primary px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+              className="block rounded-full bg-foreground text-background px-3 py-3 text-center text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
             >
-              View Spot
+              Go to Spot
             </Link>
           ))}
         </div>

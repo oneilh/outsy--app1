@@ -6,28 +6,32 @@ import type { Spot } from "@/lib/types";
 
 interface ShareSpotProps {
   spot: Spot;
+  variant?: "default" | "grid-item";
 }
 
-export function ShareSpot({ spot }: ShareSpotProps) {
+export function ShareSpot({ spot, variant = "default" }: ShareSpotProps) {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
     const shareData = {
       title: `${spot.name} — Outsy`,
       text: `Check out ${spot.name} in ${spot.area} on Outsy!`,
-      url: window.location.href,
+      url: url,
     };
 
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {
         await navigator.share(shareData);
       } catch (err) {
-        console.error("Error sharing:", err);
+        if ((err as Error).name !== 'AbortError') {
+          console.error("Error sharing:", err);
+        }
       }
     } else {
       // Fallback: Copy to clipboard
       try {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
@@ -35,6 +39,19 @@ export function ShareSpot({ spot }: ShareSpotProps) {
       }
     }
   };
+
+  if (variant === "grid-item") {
+    return (
+      <button
+        onClick={handleShare}
+        className="flex flex-col items-center justify-center py-6 hover:bg-muted transition-colors relative"
+      >
+        <RiShareForwardLine className={`h-6 w-6 text-primary mb-2 transition-transform ${copied ? 'scale-0' : 'scale-100'}`} />
+        <RiCheckLine className={`h-6 w-6 text-green-600 mb-2 absolute top-6 transition-transform ${copied ? 'scale-100' : 'scale-0'}`} />
+        <p className="text-xs font-bold">{copied ? "Copied!" : "Share"}</p>
+      </button>
+    );
+  }
 
   return (
     <button

@@ -15,64 +15,71 @@ export function CompareBar() {
   const spots = compareIds.map((id) => getSpotById(id)).filter(Boolean);
 
   return (
-    <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 pointer-events-none">
-      <div className="max-w-2xl mx-auto px-4 pb-3 pointer-events-auto">
-        <div className="flex items-center gap-3 rounded-2xl bg-secondary text-secondary-foreground px-4 py-3 shadow-xl">
+    <div className="fixed bottom-20 md:bottom-6 left-0 right-0 z-40 pointer-events-none">
+      <div className="max-w-2xl mx-auto px-4 pointer-events-auto">
+        <div className="flex items-center gap-4 rounded-2xl bg-black/80 backdrop-blur-xl text-white px-5 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/10">
           {/* Spot thumbnails */}
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            {spots.map((spot) =>
-              spot ? (
-                <div key={spot.id} className="relative flex-shrink-0 group/thumb">
-                  <div className="relative h-10 w-10 rounded-xl overflow-hidden ring-2 ring-white/20">
-                    <Image
-                      src={spot.images[0]}
-                      alt={spot.name}
-                      fill
-                      className="object-cover"
-                      sizes="40px"
-                    />
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex -space-x-3">
+              {spots.map((spot) =>
+                spot ? (
+                  <div key={spot.id} className="relative flex-shrink-0 group/thumb">
+                    <div className="relative h-11 w-11 rounded-xl overflow-hidden ring-2 ring-black bg-muted">
+                      <Image
+                        src={spot.images[0]}
+                        alt={spot.name}
+                        fill
+                        className="object-cover"
+                        sizes="44px"
+                      />
+                    </div>
+                    <button
+                      onClick={() => toggleCompare(spot.id)}
+                      className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transform scale-0 group-hover/thumb:scale-100 transition-transform duration-200"
+                      aria-label={`Remove ${spot.name}`}
+                    >
+                      <RiCloseLine className="h-3 w-3" />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => toggleCompare(spot.id)}
-                    className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-white/20 hover:bg-white/40 flex items-center justify-center transition-colors opacity-0 group-hover/thumb:opacity-100"
-                    aria-label={`Remove ${spot.name}`}
-                  >
-                    <RiCloseLine className="h-2.5 w-2.5" />
-                  </button>
-                </div>
-              ) : null
-            )}
+                ) : null
+              )}
 
-            {/* Empty slot placeholders */}
-            {Array.from({ length: 3 - spots.length }).map((_, i) => (
-              <div
-                key={i}
-                className="h-10 w-10 rounded-xl border-2 border-dashed border-white/20 flex-shrink-0"
-              />
-            ))}
+              {/* Empty slot placeholders */}
+              {Array.from({ length: 3 - spots.length }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-11 w-11 rounded-xl border-2 border-dashed border-white/10 flex-shrink-0 bg-white/5"
+                />
+              ))}
+            </div>
 
-            <div className="min-w-0 ml-1">
-              <p className="text-sm font-semibold truncate">
-                {spots.length === 1 ? "Pick 1 more to compare" : `${spots.length} spots selected`}
+            <div className="min-w-0 flex flex-col items-start ml-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/50 leading-none mb-1">
+                Comparing
+              </span>
+              <p className="text-sm font-bold truncate leading-none">
+                {spots.length === 1 ? "Pick 1 more" : `${spots.length} spots selected`}
               </p>
-              <button
-                onClick={clearCompare}
-                className="text-xs text-white/60 hover:text-white/90 transition-colors"
-              >
-                Clear
-              </button>
             </div>
           </div>
 
-          {/* CTA */}
-          <button
-            onClick={() => router.push("/compare")}
-            disabled={spots.length < 2}
-            className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
-          >
-            Compare
-            <RiArrowRightLine className="h-4 w-4" />
-          </button>
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={clearCompare}
+              className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => router.push("/compare")}
+              disabled={spots.length < 2}
+              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex-shrink-0"
+            >
+              Compare
+              <RiArrowRightLine className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

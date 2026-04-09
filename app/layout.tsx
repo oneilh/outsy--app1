@@ -4,6 +4,8 @@ import "./globals.css";
 import { Navigation } from "@/components/navigation/Navigation";
 import { CompareProvider } from "@/lib/context/CompareContext";
 import { CompareBar } from "@/components/spots/CompareBar";
+import { PHProvider } from "@/components/providers/PostHogProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -29,15 +31,18 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${outfit.variable} min-h-full flex flex-col font-sans antialiased`} data-theme="light">
-        <CompareProvider>
-          <Navigation />
-          <main className="flex-1 pb-24 md:pb-0">
-            <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-6">
-              {children}
-            </div>
-          </main>
-          <CompareBar />
-        </CompareProvider>
+        <PHProvider>
+          <CompareProvider>
+            <Navigation />
+            <main className="flex-1 pb-24 md:pb-0">
+              <div className="w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-6">
+                {children}
+              </div>
+            </main>
+            <CompareBar />
+          </CompareProvider>
+          <Toaster position="top-center" expand={false} richColors />
+        </PHProvider>
       </body>
     </html>
   );

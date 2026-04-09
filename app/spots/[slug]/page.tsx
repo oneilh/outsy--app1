@@ -16,6 +16,9 @@ import { AmenitiesList } from "@/components/spots/AmenitiesList";
 import { GoingNowButton } from "@/components/spots/GoingNowButton";
 import { ShareSpot } from "@/components/spots/ShareSpot";
 import { SimilarSpots } from "@/components/spots/SimilarSpots";
+import { DetailActions } from "@/components/spots/DetailActions";
+import { VerificationBadge } from "@/components/spots/VerificationBadge";
+import { SpotGallery } from "@/components/spots/SpotGallery";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -61,20 +64,19 @@ export default async function SpotDetailPage({ params }: Props) {
       <SpotHero spot={spot} />
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-8">
-
-        {/* Going Now CTA */}
-        <GoingNowButton spotId={spot.id} initialCount={spot.goingNowCount} />
-
+      <div className="max-w-2xl mx-auto px-4 pt-8 pb-32 space-y-10">
+        
         {/* Quick facts row */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-start gap-2 rounded-xl bg-muted p-3">
-            <RiMoneyDollarCircleLine className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-start gap-3 rounded-2xl bg-secondary/5 border border-secondary/10 p-4 transition-all hover:bg-secondary/10">
+            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary flex-shrink-0">
+              <RiMoneyDollarCircleLine className="h-6 w-6" />
+            </div>
             <div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Price</p>
-              <p className="text-sm font-semibold text-foreground">{spot.priceRange}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Price Range</p>
+              <p className="text-sm font-bold text-foreground leading-none mb-1.5">{spot.priceRange}</p>
               <span
-                className={`inline-block mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${
                   BUDGET_COLORS[spot.budgetTier] ?? "text-muted-foreground bg-muted"
                 }`}
               >
@@ -83,35 +85,54 @@ export default async function SpotDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="flex items-start gap-2 rounded-xl bg-muted p-3">
-            <RiTimeLine className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-3 rounded-2xl bg-accent/5 border border-accent/10 p-4 transition-all hover:bg-accent/10">
+             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-accent/10 text-accent flex-shrink-0">
+              <RiTimeLine className="h-6 w-6" />
+            </div>
             <div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Best Time</p>
-              <p className="text-sm font-semibold text-foreground">{spot.bestTimeToGo}</p>
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Best Time</p>
+              <p className="text-sm font-bold text-foreground leading-none">{spot.bestTimeToGo}</p>
             </div>
           </div>
         </div>
 
-        {/* Description */}
-        <p className="text-base text-foreground/80 leading-relaxed">{spot.description}</p>
+        {/* Description - Premium Typography */}
+        <div className="relative">
+          <p className="text-lg md:text-xl text-foreground font-medium leading-relaxed italic border-l-4 border-primary pl-6 py-2">
+            {spot.description}
+          </p>
+        </div>
+        
+        {/* Vibe Gallery */}
+        <SpotGallery spot={spot} />
 
         {/* Vibe tags */}
-        <VibeTagList tags={spot.vibeTags} />
+        <div className="space-y-4">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+            The Vibe
+          </h2>
+          <VibeTagList tags={spot.vibeTags} />
+        </div>
 
         {/* Amenities */}
-        <AmenitiesList amenities={spot.amenities} />
+        <div className="space-y-4">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+            Amenities
+          </h2>
+          <AmenitiesList amenities={spot.amenities} />
+        </div>
 
         {/* Who it's for */}
         {spot.whoItsFor.length > 0 && (
-          <div>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+          <div className="space-y-4">
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
               Perfect For
             </h2>
             <div className="flex flex-wrap gap-2">
               {spot.whoItsFor.map((who) => (
                 <span
                   key={who}
-                  className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-secondary/10 text-secondary"
+                  className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold bg-primary/5 text-primary border border-primary/10"
                 >
                   {who.charAt(0).toUpperCase() + who.slice(1)}
                 </span>
@@ -121,84 +142,110 @@ export default async function SpotDetailPage({ params }: Props) {
         )}
 
         {/* Map + Contact */}
-        <div className="rounded-2xl border border-border overflow-hidden">
+        <div className="rounded-3xl border border-border shadow-sm overflow-hidden bg-card">
+          <div className="p-4 border-b border-border bg-muted/30">
+             <h2 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Contact & Location</h2>
+          </div>
+          
           {/* Map CTA */}
           <Link
             href={spot.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
+            className="flex items-center gap-4 p-5 hover:bg-muted transition-colors border-b border-border"
           >
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary flex-shrink-0">
-              <RiMapPinLine className="h-5 w-5" />
+            <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 flex-shrink-0">
+              <RiMapPinLine className="h-6 w-6" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-foreground">Open in Google Maps</p>
+              <p className="text-sm font-bold text-foreground">Open in Google Maps</p>
               <p className="text-xs text-muted-foreground truncate">
                 {spot.area}, {spot.city}
               </p>
             </div>
-            <span className="text-xs font-semibold text-primary">Directions</span>
+            <span className="text-xs font-bold text-primary px-3 py-1 rounded-full bg-primary/5">Directions</span>
           </Link>
 
-          {/* Phone */}
-          {spot.phone && (
-            <Link
-              href={`tel:${spot.phone}`}
-              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border"
-            >
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted text-foreground flex-shrink-0">
-                <RiPhoneLine className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">Call</p>
-                <p className="text-xs text-muted-foreground">{spot.phone}</p>
-              </div>
-            </Link>
-          )}
+          <div className="grid grid-cols-2 divide-x divide-border border-b border-border">
+            {/* Phone */}
+            {spot.phone ? (
+              <Link
+                href={`tel:${spot.phone}`}
+                className="flex flex-col items-center justify-center py-6 hover:bg-muted transition-colors"
+              >
+                <RiPhoneLine className="h-6 w-6 text-primary mb-2" />
+                <p className="text-xs font-bold">Call</p>
+              </Link>
+            ) : null}
 
-          {/* Instagram */}
-          {spot.instagram && (
-            <Link
-              href={`https://instagram.com/${spot.instagram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border last:border-b-0"
-            >
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted text-foreground flex-shrink-0">
-                <RiInstagramLine className="h-5 w-5" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">Instagram</p>
-                <p className="text-xs text-muted-foreground">@{spot.instagram}</p>
-              </div>
-            </Link>
-          )}
+            {/* Instagram */}
+            {spot.instagram ? (
+              <Link
+                href={`https://instagram.com/${spot.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center py-6 hover:bg-muted transition-colors"
+              >
+                <RiInstagramLine className="h-6 w-6 text-primary mb-2" />
+                <p className="text-xs font-bold">Instagram</p>
+              </Link>
+            ) : null}
+          </div>
 
-          {/* Share */}
-          <ShareSpot spot={spot} />
+          <div className="grid grid-cols-2 divide-x divide-border">
+             {/* Website */}
+            {spot.website ? (
+              <Link
+                href={spot.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center justify-center py-6 hover:bg-muted transition-colors"
+              >
+                <RiGlobalLine className="h-6 w-6 text-primary mb-2" />
+                <p className="text-xs font-bold">Website</p>
+              </Link>
+            ) : (
+               <div className="py-6 flex flex-col items-center justify-center opacity-40">
+                <RiGlobalLine className="h-6 w-6 mb-2" />
+                <p className="text-xs font-bold">No Website</p>
+              </div>
+            )}
+            
+            {/* Share - Reusing component but styled as a grid item if possible */}
+            <ShareSpot spot={spot} variant="grid-item" />
+          </div>
 
-          {/* Website */}
-          {spot.website && (
-            <Link
-              href={spot.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-4 hover:bg-muted transition-colors"
-            >
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-muted text-foreground flex-shrink-0">
-                <RiGlobalLine className="h-5 w-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground">Website</p>
-                <p className="text-xs text-muted-foreground truncate">{spot.website}</p>
-              </div>
-            </Link>
-          )}
+          {/* Additional Actions (Compare, Report) */}
+          <DetailActions spot={spot} />
         </div>
 
+        {/* Verification Footer */}
+        <VerificationBadge spot={spot} />
+
         {/* Similar spots */}
-        {similarSpots.length > 0 && <SimilarSpots spots={similarSpots} />}
+        {similarSpots.length > 0 && (
+          <div className="pt-8 border-t border-border">
+            <SimilarSpots spots={similarSpots} />
+          </div>
+        )}
+      </div>
+
+      {/* Floating Sticky Bottom Bar */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-gradient-to-t from-background via-background/95 to-transparent z-50">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <div className="flex-1">
+            <GoingNowButton spotId={spot.id} initialCount={spot.goingNowCount} variant="full" />
+          </div>
+          <Link
+            href={spot.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground flex items-center justify-center shadow-xl shadow-secondary/20 hover:scale-105 active:scale-95 transition-all"
+            aria-label="Get directions"
+          >
+            <RiMapPinLine className="h-7 w-7" />
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -75,25 +75,26 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Special Badges Info (Only New/Spotlight/Special) */}
-              <div className="absolute top-3 left-3 flex flex-col gap-2">
+              {/* Special Badges Info (Tightened Horizontal Grouping) */}
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10">
                 {spot.special ? (
-                  <span className="badge bg-primary text-white shadow-lg flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase bg-primary text-white shadow-xl border border-white/20">
                     <RiFlashlightLine className="h-3 w-3" />
                     {spot.special.label}
                   </span>
                 ) : spot.isFeatured ? (
-                  <span className="badge bg-accent text-accent-foreground shadow-lg flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase bg-accent text-accent-foreground shadow-xl border border-white/20">
                     <RiStarFill className="h-3 w-3" />
                     Spotlight
                   </span>
                 ) : spot.isNew ? (
-                  <span className="badge bg-green-500 text-white shadow-lg flex items-center gap-1">
+                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase bg-linear-to-r from-green-500 to-emerald-600 text-white shadow-xl border border-white/20">
                     <RiTimerFlashLine className="h-3 w-3" />
                     New
                   </span>
                 ) : null}
               </div>
+
 
               {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4">

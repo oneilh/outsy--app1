@@ -46,30 +46,31 @@ export function SpotCard({ spot, trendingReason }: SpotCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-        {/* Category chip */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold bg-black/60 text-white backdrop-blur-sm">
+        <div className="absolute top-2 left-2 flex items-center gap-1.5">
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-black/60 text-white backdrop-blur-md border border-white/10 shadow-sm">
             {CATEGORY_LABELS[spot.category] ?? spot.category}
           </span>
           
-          {/* Status Badges - Prioritize Special > Spotlight > New to avoid "spam" */}
-          {spot.special ? (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-primary text-white shadow-lg">
-              <RiFlashlightLine className="h-2.5 w-2.5" />
-              {spot.special.label}
-            </span>
-          ) : spot.isFeatured ? (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
-              <RiStarFill className="h-2.5 w-2.5" />
-              Spotlight
-            </span>
-          ) : spot.isNew ? (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
-              <RiTimerFlashLine className="h-2.5 w-2.5" />
-              New
-            </span>
-          ) : null}
+          <div className="flex items-center gap-1">
+            {spot.special ? (
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-primary text-white shadow-lg">
+                <RiFlashlightLine className="h-2.5 w-2.5" />
+                {spot.special.label}
+              </span>
+            ) : spot.isFeatured ? (
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-accent text-accent-foreground shadow-sm">
+                <RiStarFill className="h-2.5 w-2.5" />
+                Spotlight
+              </span>
+            ) : spot.isNew ? (
+              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-black uppercase bg-green-500 text-white shadow-sm">
+                <RiTimerFlashLine className="h-2.5 w-2.5" />
+                New
+              </span>
+            ) : null}
+          </div>
         </div>
+
 
         {/* Save button */}
         <button
@@ -87,13 +88,7 @@ export function SpotCard({ spot, trendingReason }: SpotCardProps) {
           )}
         </button>
 
-        {/* Going now count */}
-        {spot.goingNowCount > 0 && (
-          <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-primary/90 rounded-full px-2 py-0.5">
-            <RiGroupLine className="h-3 w-3 text-white" />
-            <span className="text-[10px] font-bold text-white">{spot.goingNowCount}</span>
-          </div>
-        )}
+
       </div>
 
       <div className="px-0.5">
