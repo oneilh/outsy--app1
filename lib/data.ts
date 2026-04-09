@@ -175,6 +175,20 @@ export async function getSpotsForCollection(collectionSlug: string): Promise<Spo
   return data.map(mapSpot);
 }
 
+export async function getCollectionsForSpot(spotId: string): Promise<Collection[]> {
+  const supabase = createStaticClient();
+  const { data, error } = await supabase
+    .from('collections')
+    .select('*')
+    .contains('spot_ids', [spotId]);
+
+  if (error) {
+    console.error('Error fetching collections for spot:', error);
+    return [];
+  }
+  return data.map(mapCollection);
+}
+
 export async function getDiscoverSpots(limit: number = 4): Promise<{
   morning: Spot[];
   afternoon: Spot[];

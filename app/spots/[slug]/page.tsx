@@ -9,13 +9,14 @@ import {
   RiGlobalLine,
   RiPhoneLine,
 } from "react-icons/ri";
-import { getSpotBySlug, getSimilarSpots, getAllSpots } from "@/lib/data";
+import { getSpotBySlug, getSimilarSpots, getAllSpots, getCollectionsForSpot } from "@/lib/data";
 import { SpotHero } from "@/components/spots/SpotHero";
 import { VibeTagList } from "@/components/spots/VibeTagList";
 import { AmenitiesList } from "@/components/spots/AmenitiesList";
 import { GoingNowButton } from "@/components/spots/GoingNowButton";
 import { ShareSpot } from "@/components/spots/ShareSpot";
 import { SimilarSpots } from "@/components/spots/SimilarSpots";
+import { RelatedCollections } from "@/components/spots/RelatedCollections";
 import { DetailActions } from "@/components/spots/DetailActions";
 import { VerificationBadge } from "@/components/spots/VerificationBadge";
 import { SpotGallery } from "@/components/spots/SpotGallery";
@@ -62,7 +63,10 @@ export default async function SpotDetailPage({ params }: Props) {
   const spot = await getSpotBySlug(slug);
   if (!spot) notFound();
 
-  const similarSpots = await getSimilarSpots(spot);
+  const [similarSpots, relatedCollections] = await Promise.all([
+    getSimilarSpots(spot),
+    getCollectionsForSpot(spot.id)
+  ]);
 
   return (
     <div className="min-h-screen bg-background pb-32">
@@ -129,6 +133,13 @@ export default async function SpotDetailPage({ params }: Props) {
               {/* Amenities */}
               <AmenitiesList amenities={spot.amenities} />
             </div>
+
+            {/* Related Collections */}
+            {relatedCollections.length > 0 && (
+              <div className="pt-8">
+                <RelatedCollections collections={relatedCollections} />
+              </div>
+            )}
 
             {/* Who it's for */}
             {spot.whoItsFor.length > 0 && (
