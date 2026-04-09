@@ -25,13 +25,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const spots = getAllSpots();
+  const spots = await getAllSpots();
   return spots.map((spot) => ({ slug: spot.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const spot = getSpotBySlug(slug);
+  const spot = await getSpotBySlug(slug);
   if (!spot) return {};
   return {
     title: `${spot.name} — ${spot.area}, Lagos | Outsy`,
@@ -59,10 +59,10 @@ const BUDGET_COLORS: Record<string, string> = {
 
 export default async function SpotDetailPage({ params }: Props) {
   const { slug } = await params;
-  const spot = getSpotBySlug(slug);
+  const spot = await getSpotBySlug(slug);
   if (!spot) notFound();
 
-  const similarSpots = getSimilarSpots(spot);
+  const similarSpots = await getSimilarSpots(spot);
 
   return (
     <div className="min-h-screen bg-background pb-32">

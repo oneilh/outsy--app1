@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SpotsPage() {
-  return <SpotsClient />;
+import { getAllSpots } from "@/lib/data";
+
+export default async function SpotsPage() {
+  const spots = await getAllSpots();
+  return <SpotsClient initialSpots={spots} />;
 }

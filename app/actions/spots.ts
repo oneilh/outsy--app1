@@ -1,30 +1,53 @@
 'use server'
 
-import fs from 'fs';
-import path from 'path';
+import { createClient } from '@/lib/supabase/server';
 import { Spot } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
-const SPOTS_FILE = path.join(process.cwd(), 'data', 'spots.json');
-
 export async function addSpot(spot: Omit<Spot, 'id' | 'createdAt' | 'goingNowCount'>) {
   try {
-    const spots: Spot[] = JSON.parse(fs.readFileSync(SPOTS_FILE, 'utf8'));
+    const supabase = await createClient();
     
-    const newSpot: Spot = {
-      ...spot,
-      id: Math.random().toString(36).substring(2, 11),
-      createdAt: new Date().toISOString(),
-      goingNowCount: 0
+    // Transform to snake_case for DB
+    const dbSpot = {
+      name: spot.name,
+      slug: spot.slug,
+      description: spot.description,
+      area: spot.area,
+      city: spot.city,
+      category: spot.category,
+      budget_tier: spot.budgetTier,
+      price_range: spot.priceRange,
+      vibe_tags: spot.vibeTags,
+      who_its_for: spot.whoItsFor,
+      amenities: spot.amenities,
+      best_time_to_go: spot.bestTimeToGo,
+      images: spot.images,
+      video_url: spot.videoUrl,
+      phone: spot.phone,
+      instagram: spot.instagram,
+      website: spot.website,
+      maps_url: spot.mapsUrl,
+      is_verified: spot.isVerified,
+      last_verified_date: spot.lastVerifiedDate,
+      is_featured: spot.isFeatured,
+      is_outsy_pick: spot.isOutsyPick,
+      is_new: spot.isNew,
+      type: spot.type
     };
-    
-    spots.push(newSpot);
-    fs.writeFileSync(SPOTS_FILE, JSON.stringify(spots, null, 2));
+
+    const { data, error } = await supabase
+      .from('spots')
+      .insert([dbSpot])
+      .select()
+      .single();
+
+    if (error) throw error;
     
     revalidatePath('/admin');
     revalidatePath('/spots');
     revalidatePath('/');
-    return { success: true, spot: newSpot };
+    return { success: true, spot: data };
   } catch (error) {
     console.error('Failed to add spot:', error);
     return { success: false, error: 'Failed to add spot' };
@@ -33,19 +56,34 @@ export async function addSpot(spot: Omit<Spot, 'id' | 'createdAt' | 'goingNowCou
 
 export async function updateSpot(id: string, updates: Partial<Spot>) {
   try {
-    const spots: Spot[] = JSON.parse(fs.readFileSync(SPOTS_FILE, 'utf8'));
-    const index = spots.findIndex(s => s.id === id);
+    const supabase = await createClient();
     
-    if (index === -1) return { success: false, error: 'Spot not found' };
-    
-    spots[index] = { ...spots[index], ...updates };
-    fs.writeFileSync(SPOTS_FILE, JSON.stringify(spots, null, 2));
+    // Transform known fields to snake_case
+    const dbUpdates: any = { ...updates };
+    if (updates.budgetTier) {
+      dbUpdates.budget_tier = updates.budgetTier;
+      delete dbUpdates.budgetTier;
+    }
+    if (updates.vibeTags) {
+      dbUpdates.vibe_tags = updates.vibeTags;
+      delete dbUpdates.vibeTags;
+    }
+    // ... add more mappings if needed, or refine the Partial<Spot> mapping
+
+    const { data, error } = await supabase
+      .from('spots')
+      .update(dbUpdates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
     
     revalidatePath('/admin');
-    revalidatePath(`/spots/${spots[index].slug}`);
+    revalidatePath(`/spots/${data.slug}`);
     revalidatePath('/spots');
     revalidatePath('/');
-    return { success: true, spot: spots[index] };
+    return { success: true, spot: data };
   } catch (error) {
     console.error('Failed to update spot:', error);
     return { success: false, error: 'Failed to update spot' };
@@ -54,18 +92,21 @@ export async function updateSpot(id: string, updates: Partial<Spot>) {
 
 export async function verifySpot(id: string) {
   try {
-    const spots: Spot[] = JSON.parse(fs.readFileSync(SPOTS_FILE, 'utf8'));
-    const index = spots.findIndex(s => s.id === id);
-    
-    if (index === -1) return { success: false, error: 'Spot not found' };
-    
-    spots[index].isVerified = true;
-    spots[index].lastVerifiedDate = new Date().toISOString().split('T')[0];
-    
-    fs.writeFileSync(SPOTS_FILE, JSON.stringify(spots, null, 2));
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('spots')
+      .update({ 
+        is_verified: true, 
+        last_verified_date: new Date().toISOString() 
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
     
     revalidatePath('/admin');
-    revalidatePath(`/spots/${spots[index].slug}`);
+    revalidatePath(`/spots/${data.slug}`);
     revalidatePath('/');
     return { success: true };
   } catch (error) {
@@ -76,17 +117,17 @@ export async function verifySpot(id: string) {
 
 export async function deleteSpot(id: string) {
   try {
-    const spots: Spot[] = JSON.parse(fs.readFileSync(SPOTS_FILE, 'utf8'));
-    const spotToDelete = spots.find(s => s.id === id);
-    const filtered = spots.filter(s => s.id !== id);
+    const supabase = await createClient();
     
-    fs.writeFileSync(SPOTS_FILE, JSON.stringify(filtered, null, 2));
+    // Get slug before deleting for cache revalidation
+    const { data: spot } = await supabase.from('spots').select('slug').eq('id', id).single();
+
+    const { error } = await supabase.from('spots').delete().eq('id', id);
+    if (error) throw error;
     
     revalidatePath('/admin');
     revalidatePath('/spots');
-    if (spotToDelete) {
-      revalidatePath(`/spots/${spotToDelete.slug}`);
-    }
+    if (spot) revalidatePath(`/spots/${spot.slug}`);
     revalidatePath('/');
     return { success: true };
   } catch (error) {

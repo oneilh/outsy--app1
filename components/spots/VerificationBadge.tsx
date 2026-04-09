@@ -9,9 +9,11 @@ interface VerificationBadgeProps {
 
 export function VerificationBadge({ spot }: VerificationBadgeProps) {
   // Mock logic for days since verified
-  const lastDate = new Date(spot.lastVerifiedDate);
+  const lastDate = spot.lastVerifiedDate ? new Date(spot.lastVerifiedDate) : null;
   const now = new Date();
-  const diffDays = Math.ceil((now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+  const diffDays = lastDate && !isNaN(lastDate.getTime()) 
+    ? Math.max(0, Math.ceil((now.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)))
+    : null;
 
   return (
     <div className="rounded-2xl bg-muted/30 p-4 border border-border/50">
@@ -28,13 +30,17 @@ export function VerificationBadge({ spot }: VerificationBadgeProps) {
             {spot.isVerified ? "Verified by Outsy" : "Awaiting Verification"}
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
-            {spot.isVerified 
+            {spot.isVerified && diffDays !== null
               ? `We last checked this spot ${diffDays} day${diffDays === 1 ? "" : "s"} ago to ensure the price and vibes are accurate.`
+              : spot.isVerified
+              ? "We recently checked this spot to ensure the price and vibes are accurate."
               : "We're currently verifying this spot. Information is based on recent user feedback and public data."}
           </p>
-          <div className="mt-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
-            Last Checked: {spot.lastVerifiedDate}
-          </div>
+          {spot.lastVerifiedDate && (
+            <div className="mt-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+              Last Checked: {spot.lastVerifiedDate}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { RiMapPinLine, RiTimeLine, RiMoneyDollarCircleLine, RiLayoutGridLine, RiCheckLine, RiCloseLine, RiArrowRightLine } from "react-icons/ri";
 import { useCompare } from "@/lib/context/CompareContext";
-import { getSpotById } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { getSpotsByIds } from "@/lib/data-client";
 import type { Spot } from "@/lib/types";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { VerificationBadge } from "@/components/spots/VerificationBadge";
@@ -42,7 +43,29 @@ function ComparisonSection({ label, children }: { label: string; children: React
 
 export default function ComparePage() {
   const { compareIds, clearCompare } = useCompare();
-  const spots = compareIds.map((id) => getSpotById(id)).filter((s): s is Spot => !!s);
+  const [spots, setSpots] = useState<Spot[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSpots() {
+      if (compareIds.length > 0) {
+        const data = await getSpotsByIds(compareIds);
+        setSpots(data);
+      } else {
+        setSpots([]);
+      }
+      setLoading(false);
+    }
+    fetchSpots();
+  }, [compareIds]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   if (spots.length < 2) {
     return (
@@ -114,7 +137,7 @@ export default function ComparePage() {
                 <Link key={spot.id} href={`/spots/${spot.slug}`} className="group flex flex-col gap-4">
                   <div className="relative aspect-[4/3] w-full rounded-3xl overflow-hidden border border-border/40 shadow-xl group-hover:border-primary/50 transition-all">
                     <Image
-                      src={spot.images[0]}
+                      src={spot.images[0] || "https://images.unsplash.com/photo-1618828665011-0abd973f7bb8?q=80&w=1000&auto=format&fit=crop"}
                       alt={spot.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"

@@ -4,18 +4,31 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { RiCloseLine, RiArrowRightLine } from "react-icons/ri";
 import { useCompare } from "@/lib/context/CompareContext";
-import { getSpotById } from "@/lib/data";
+import { useState, useEffect } from "react";
+import { getSpotsByIds } from "@/lib/data-client";
+import { Spot } from "@/lib/types";
 
 export function CompareBar() {
   const { compareIds, toggleCompare, clearCompare } = useCompare();
   const router = useRouter();
+  const [spots, setSpots] = useState<Spot[]>([]);
 
   const pathname = usePathname();
   const isDetailPage = pathname.startsWith("/spots/");
 
-  if (compareIds.length === 0) return null;
+  useEffect(() => {
+    async function loadThumbnails() {
+      if (compareIds.length > 0) {
+        const data = await getSpotsByIds(compareIds);
+        setSpots(data);
+      } else {
+        setSpots([]);
+      }
+    }
+    loadThumbnails();
+  }, [compareIds]);
 
-  const spots = compareIds.map((id) => getSpotById(id)).filter(Boolean);
+  if (compareIds.length === 0) return null;
 
   return (
     <div className={`fixed ${isDetailPage ? "bottom-[112px] md:bottom-24" : "bottom-20 md:bottom-6"} left-0 right-0 z-40 pointer-events-none transition-all duration-300`}>

@@ -11,12 +11,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return getAllCollections().map((c) => ({ slug: c.slug }));
+  const collections = await getAllCollections();
+  return collections.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const collection = getCollectionBySlug(slug);
+  const collection = await getCollectionBySlug(slug);
   if (!collection) return {};
   return {
     title: `${collection.name} | Lagos Spot Collections — Outsy`,
@@ -38,10 +39,10 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default async function CollectionDetailPage({ params }: Props) {
   const { slug } = await params;
-  const collection = getCollectionBySlug(slug);
+  const collection = await getCollectionBySlug(slug);
   if (!collection) notFound();
 
-  const spots = getSpotsForCollection(slug);
+  const spots = await getSpotsForCollection(slug);
 
   return (
     <div className="min-h-screen bg-background pb-20">

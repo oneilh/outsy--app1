@@ -8,11 +8,12 @@ import { RandomSpotButton } from "@/components/home/RandomSpotButton";
 
 import { PageContainer } from "@/components/layout/PageContainer";
 
-export default function Home() {
-  const picks = getOutsyPicks();
-  const trending = getTrendingSpots(15); // Get more for "See all" functionality if needed
-  const discoverSpots = getDiscoverSpots(4);
-  const allSlugs = getAllSpots().map((s) => s.slug);
+export default async function Home() {
+  const picks = await getOutsyPicks();
+  const trending = await getTrendingSpots(15); 
+  const discoverSpots = await getDiscoverSpots(4);
+  const allSpots = await getAllSpots();
+  const allSlugs = allSpots.map((s) => s.slug);
 
   return (
     <PageContainer className="pb-24 md:pb-10">

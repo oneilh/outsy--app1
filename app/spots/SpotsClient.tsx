@@ -3,11 +3,8 @@
 import { useState, useMemo } from "react";
 import { RiSearchLine, RiCloseLine } from "react-icons/ri";
 import posthog from "posthog-js";
-import { getAllSpots } from "@/lib/data";
 import { SpotGrid } from "@/components/spots/SpotGrid";
-import type { SpotCategory, BudgetTier } from "@/lib/types";
-
-const ALL_SPOTS = getAllSpots();
+import type { Spot, SpotCategory, BudgetTier } from "@/lib/types";
 
 const CATEGORIES: { id: SpotCategory | "all"; label: string }[] = [
   { id: "all",        label: "All"        },
@@ -27,7 +24,8 @@ const BUDGETS: { id: BudgetTier | "all"; label: string }[] = [
   { id: "splurge", label: "Splurge ₦₦₦" },
 ];
 
-export default function SpotsPage() {
+export default function SpotsPage({ initialSpots }: { initialSpots: Spot[] }) {
+  const ALL_SPOTS = initialSpots;
 
   const [query, setQuery]       = useState("");
   const [category, setCategory] = useState<SpotCategory | "all">("all");

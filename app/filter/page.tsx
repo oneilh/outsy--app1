@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Tell us your vibe and we'll find the perfect Lagos spot for you.",
 };
 
-export default function FilterPage() {
-  const spots = getAllSpots();
+export default async function FilterPage() {
+  const spots = await getAllSpots();
   return <SmartFilter allSpots={spots} />;
 }

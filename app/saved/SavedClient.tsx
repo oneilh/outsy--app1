@@ -3,18 +3,21 @@
 import { useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { RiBookmarkLine, RiGroupLine } from "react-icons/ri";
-import { getAllSpots } from "@/lib/data";
 import { useSavedSpots } from "@/lib/hooks/useSavedSpots";
 import { SpotGrid } from "@/components/spots/SpotGrid";
 import { ShareSavedList } from "@/components/spots/ShareSavedList";
 import { PageContainer } from "@/components/layout/PageContainer";
 import Link from "next/link";
 
-const allSpots = getAllSpots();
+import { useState, useEffect } from "react";
+import { getSpotsByIds } from "@/lib/data-client";
+import type { Spot } from "@/lib/types";
 
 function SavedContent() {
   const { savedIds } = useSavedSpots();
   const searchParams = useSearchParams();
+  const [savedSpots, setSavedSpots] = useState<Spot[]>([]);
+  const [loading, setLoading] = useState(true);
   
   // Get IDs from URL if present
   const sharedIdsParam = searchParams.get("ids");
@@ -23,10 +26,26 @@ function SavedContent() {
   
   const displayIds = isSharedView ? sharedIds : savedIds;
 
-  const savedSpots = useMemo(
-    () => allSpots.filter((s) => displayIds.includes(s.id)),
-    [displayIds]
-  );
+  useEffect(() => {
+    async function loadSpots() {
+      if (displayIds.length > 0) {
+        const data = await getSpotsByIds(displayIds);
+        setSavedSpots(data);
+      } else {
+        setSavedSpots([]);
+      }
+      setLoading(false);
+    }
+    loadSpots();
+  }, [displayIds]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+         <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-32">

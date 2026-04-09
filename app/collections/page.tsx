@@ -19,8 +19,8 @@ const TYPE_ORDER: Collection["type"][] = ["category", "mood", "who", "curated"];
 
 import { PageContainer } from "@/components/layout/PageContainer";
 
-export default function CollectionsPage() {
-  const collections = getAllCollections();
+export default async function CollectionsPage() {
+  const collections = await getAllCollections();
 
   const grouped = TYPE_ORDER.reduce<Record<Collection["type"], Collection[]>>(
     (acc, type) => {

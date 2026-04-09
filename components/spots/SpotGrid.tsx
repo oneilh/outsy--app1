@@ -55,7 +55,7 @@ export function SpotGrid({ spots, className = "" }: SpotGridProps) {
               {/* Image Container */}
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-3">
                 <Image
-                  src={spot.images[0]}
+                  src={spot.images[0] || "https://images.unsplash.com/photo-1618828665011-0abd973f7bb8?q=80&w=1000&auto=format&fit=crop"}
                   alt={spot.name}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
