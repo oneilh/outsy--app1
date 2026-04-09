@@ -1,0 +1,7 @@
+[
+  { "id": "b1", "name": "Nok by Alara", "tier": "Featured", "startDate": "2026-03-01", "expiryDate": "2026-04-01", "status": "Active", "contact": "@nokbyalara", "notes": "Renewed on time" },
+  { "id": "b2", "name": "Quilox", "tier": "Featured", "startDate": "2026-03-15", "expiryDate": "2026-04-15", "status": "Active", "contact": "@quiloxlagos", "notes": "First 2 weeks free" },
+  { "id": "b3", "name": "Shiro Lagos", "tier": "Basic", "startDate": "2026-02-01", "expiryDate": "2026-03-01", "status": "Expired", "contact": "+234 816 000 1234", "notes": "Follow up for renewal" },
+  { "id": "b4", "name": "UPBEAT Recreation", "tier": "Basic", "startDate": "2026-04-01", "expiryDate": "2026-05-01", "status": "Active", "contact": "@upbeatlagos", "notes": "" },
+  { "id": "b5", "name": "The George", "tier": "Featured", "startDate": "2026-03-10", "expiryDate": "2026-04-10", "status": "Pending", "contact": "@thegeorgelagos", "notes": "Awaiting payment" }
+]

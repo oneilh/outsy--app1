@@ -1,27 +1,55 @@
 "use client";
 
-import { RiAddLine, RiCalendarLine, RiPriceTag3Line, RiEditLine } from "react-icons/ri";
+import { RiAddLine, RiCalendarLine, RiPriceTag3Line, RiEditLine, RiDeleteBinLine } from "react-icons/ri";
+import { Business } from "@/lib/types";
+import { deleteBusiness } from "@/app/actions/businesses";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { BusinessForm } from "./BusinessForm";
 
-// ── Mock business data ──────────────────────────────────────────────────────
-const BUSINESSES = [
-  { id: "b1", name: "Nok by Alara", tier: "Featured", startDate: "2026-03-01", expiryDate: "2026-04-01", status: "Active", contact: "@nokbyalara", notes: "Renewed on time" },
-  { id: "b2", name: "Quilox", tier: "Featured", startDate: "2026-03-15", expiryDate: "2026-04-15", status: "Active", contact: "@quiloxlagos", notes: "First 2 weeks free" },
-  { id: "b3", name: "Shiro Lagos", tier: "Basic", startDate: "2026-02-01", expiryDate: "2026-03-01", status: "Expired", contact: "+234 816 000 1234", notes: "Follow up for renewal" },
-  { id: "b4", name: "UPBEAT Recreation", tier: "Basic", startDate: "2026-04-01", expiryDate: "2026-05-01", status: "Active", contact: "@upbeatlagos", notes: "" },
-  { id: "b5", name: "The George", tier: "Featured", startDate: "2026-03-10", expiryDate: "2026-04-10", status: "Pending", contact: "@thegeorgelagos", notes: "Awaiting payment" },
-];
+interface AdminBusinessesProps {
+  businesses: Business[];
+}
 
 const BUSINESS_STATUS_STYLES: Record<string, string> = {
   Active: "bg-green-50 text-green-700",
   Expired: "bg-red-50 text-red-700",
   Pending: "bg-amber-50 text-amber-700",
+  Cancelled: "bg-slate-50 text-slate-700",
 };
 
 function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export function AdminBusinesses() {
+export function AdminBusinesses({ businesses }: AdminBusinessesProps) {
+  const router = useRouter();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingBusiness, setEditingBusiness] = useState<Business | undefined>(undefined);
+
+  const handleEdit = (biz: Business) => {
+    setEditingBusiness(biz);
+    setIsFormOpen(true);
+  };
+
+  const handleCreate = () => {
+    setEditingBusiness(undefined);
+    setIsFormOpen(true);
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (confirm(`Are you sure you want to delete the partnership for "${name}"?`)) {
+      const result = await deleteBusiness(id);
+      if (result.success) {
+        toast.success("Partnership deleted");
+        router.refresh();
+      } else {
+        toast.error("Failed to delete partnership");
+      }
+    }
+  };
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -29,14 +57,17 @@ export function AdminBusinesses() {
            <h2 className="text-xl font-bold text-foreground">Business Partnerships</h2>
            <p className="text-sm text-muted-foreground">Manage sponsorships, featured status, and billing.</p>
         </div>
-        <button className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-white text-sm font-bold shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all">
+        <button 
+          onClick={handleCreate}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-white text-sm font-bold shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all"
+        >
           <RiAddLine className="h-5 w-5" />
           Onboard Business
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {BUSINESSES.map((biz) => (
+        {businesses.map((biz) => (
           <div key={biz.id} className="rounded-3xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-start justify-between gap-2 mb-5">
               <div>
@@ -80,14 +111,29 @@ export function AdminBusinesses() {
 
             <div className="flex items-center gap-2">
                <button className="flex-1 py-2.5 rounded-xl border border-border text-xs font-bold hover:bg-muted transition-colors">Contact</button>
-               <button className="flex-1 py-2.5 rounded-xl border border-border text-xs font-bold hover:bg-muted transition-colors">Invoice</button>
-               <button className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
+               <button 
+                onClick={() => handleEdit(biz)}
+                className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-primary transition-all"
+               >
                   <RiEditLine className="h-5 w-5" />
+               </button>
+               <button 
+                onClick={() => handleDelete(biz.id, biz.name)}
+                className="h-10 w-10 rounded-xl bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-100 transition-all font-black"
+               >
+                  <RiDeleteBinLine className="h-5 w-5" />
                </button>
             </div>
           </div>
         ))}
       </div>
+
+      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <BusinessForm 
+          initialData={editingBusiness} 
+          onSuccess={() => setIsFormOpen(false)} 
+        />
+      </Dialog>
     </div>
   );
 }

@@ -104,7 +104,7 @@ export function DiscoverSection({ morning, afternoon, night }: DiscoverSectionPr
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex flex-row items-center justify-between lg:flex-col lg:items-start gap-4 lg:gap-3">
         <h2 className="text-xl font-bold text-foreground">Discover</h2>
         <div className="flex bg-muted/50 p-1 rounded-xl">
           {TABS.map((tab) => {

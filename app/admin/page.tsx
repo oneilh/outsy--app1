@@ -30,14 +30,19 @@ import {
   RiPriceTag3Line,
   RiInstagramLine,
   RiGlobalLine,
+  RiHashtag,
+  RiCloseLine,
 } from "react-icons/ri";
-import { IssueReport, Spot, Collection } from "@/lib/types";
+import { IssueReport, Spot, Collection, Business } from "@/lib/types";
 import { AdminReports } from "@/components/admin/AdminReports";
 import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 import { AdminVerification } from "@/components/admin/AdminVerification";
 import { AdminBusinesses } from "@/components/admin/AdminBusinesses";
 import { AdminCalendar } from "@/components/admin/AdminCalendar";
+import { AdminCollections } from "@/components/admin/AdminCollections";
 import { SpotForm } from "@/components/admin/SpotForm";
+import masterTags from "@/data/tags.json";
+import { deleteTag } from "@/app/actions/tags";
 import { deleteSpot } from "@/app/actions/spots";
 import {
   Dialog,
@@ -47,10 +52,12 @@ import { useRouter } from "next/navigation";
 import spotsRaw from "@/data/spots.json";
 import collectionsRaw from "@/data/collections.json";
 import reportsRaw from "@/data/reports.json";
+import businessesRaw from "@/data/businesses.json";
 
 const spots = spotsRaw as Spot[];
 const collections = collectionsRaw as Collection[];
 const reports = reportsRaw as IssueReport[];
+const businesses = businessesRaw as Business[];
 
 // ── Verification tier logic ────────────────────────────────────────────────
 function getVerificationTier(lastVerifiedDate: string): "urgent" | "due" | "pending" | "ok" {
@@ -65,7 +72,7 @@ function daysSince(dateStr: string) {
   return Math.floor((Date.now() - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
 }
 
-type Tab = "overview" | "analytics" | "verification" | "businesses" | "reports" | "calendar";
+type Tab = "overview" | "analytics" | "verification" | "businesses" | "reports" | "calendar" | "collections";
 
 // ── Stats derived from mock data ──────────────────────────────────────────
 const totalSpots = spots.length;
@@ -170,6 +177,7 @@ export default function AdminPage() {
       <div className="flex gap-1 mb-8 overflow-x-auto scrollbar-none border-b border-border pb-px">
         {([
           { id: "overview", label: "Content", icon: RiGridLine },
+          { id: "collections", label: "Collections", icon: RiHashtag },
           { id: "analytics", label: "Analytics", icon: RiLineChartLine },
           { id: "verification", label: "Verification", icon: RiShieldCheckLine },
           { id: "businesses", label: "Businesses", icon: RiStoreLine },
@@ -313,6 +321,41 @@ export default function AdminPage() {
               </table>
             </div>
           </div>
+
+          {/* Vibe Tag Master List Management */}
+          <div className="mt-12 bg-card border border-border rounded-3xl p-8 shadow-sm">
+             <div className="flex items-center justify-between mb-6">
+                <div>
+                   <h3 className="text-base font-bold text-foreground">Master Vibe Tags</h3>
+                   <p className="text-xs text-muted-foreground">Centralized tags for all spot listings.</p>
+                </div>
+                <div className="flex items-center gap-2 text-[10px] font-black text-primary bg-primary/5 px-3 py-1 rounded-full uppercase tracking-widest">
+                   {masterTags.length} Total Tags
+                </div>
+             </div>
+             
+             <div className="flex flex-wrap gap-2">
+                {masterTags.map((tag) => (
+                   <div 
+                    key={tag} 
+                    className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 border border-border hover:border-red-200 hover:bg-red-50 transition-all"
+                   >
+                      <span className="text-[10px] font-bold text-foreground">{tag}</span>
+                      <button 
+                        onClick={async () => {
+                          if (confirm(`Delete tag "${tag}" from master list?`)) {
+                             await deleteTag(tag);
+                             router.refresh();
+                          }
+                        }}
+                        className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-red-500 transition-all"
+                      >
+                         <RiCloseLine className="h-3 w-3" />
+                      </button>
+                   </div>
+                ))}
+             </div>
+          </div>
         </div>
       )}
 
@@ -326,10 +369,13 @@ export default function AdminPage() {
       {tab === "verification" && <AdminVerification spots={spots} />}
 
       {/* ── Tab: Business & Payments ───────────────────────────────────── */}
-      {tab === "businesses" && <AdminBusinesses />}
+      {tab === "businesses" && <AdminBusinesses businesses={businesses} />}
 
       {/* ── Tab: Content Calendar ──────────────────────────────────────── */}
       {tab === "calendar" && <AdminCalendar spots={spots} />}
+
+      {/* ── Tab: Collections ─────────────────────────────────────────── */}
+      {tab === "collections" && <AdminCollections collections={collections} allSpots={spots} />}
        {/* ── Spot Form Dialog ─────────────────────────────────────────── */}
       <Dialog open={isSpotFormOpen} onOpenChange={setIsSpotFormOpen}>
         <SpotForm 

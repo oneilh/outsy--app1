@@ -64,3 +64,14 @@ export interface IssueReport {
   createdAt: string;
   status: 'pending' | 'resolved' | 'dismissed';
 }
+
+export interface Business {
+  id: string;
+  name: string;
+  tier: 'Basic' | 'Featured' | 'Premium';
+  startDate: string;
+  expiryDate: string;
+  status: 'Active' | 'Expired' | 'Pending' | 'Cancelled';
+  contact: string;
+  notes: string;
+}

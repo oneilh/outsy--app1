@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Spot, SpotCategory, BudgetTier } from "@/lib/types";
 import { addSpot, updateSpot } from "@/app/actions/spots";
 import { toast } from "sonner";
@@ -15,7 +15,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { RiSaveLine, RiImageLine, RiLinksLine, RiSettings4Line, RiFireLine } from "react-icons/ri";
+import { RiSaveLine, RiImageLine, RiLinksLine, RiSettings4Line, RiFireLine, RiSearchLine, RiAddLine, RiCloseLine } from "react-icons/ri";
+import masterTags from "@/data/tags.json";
+import { addTag } from "@/app/actions/tags";
 
 interface SpotFormProps {
   initialData?: Spot;
@@ -34,7 +36,7 @@ export function SpotForm({ initialData, onSuccess }: SpotFormProps) {
       description: "",
       area: "",
       city: "Lagos",
-      category: "restaurant",
+      category: "eating",
       budgetTier: "mid",
       priceRange: "₦₦₦",
       vibeTags: [],
@@ -54,6 +56,10 @@ export function SpotForm({ initialData, onSuccess }: SpotFormProps) {
       type: "spot",
     }
   );
+
+  const [tagSearch, setTagSearch] = useState("");
+  const [isAddingTag, setIsAddingTag] = useState(false);
+  const [newTagValue, setNewTagValue] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,6 +118,35 @@ export function SpotForm({ initialData, onSuccess }: SpotFormProps) {
   const addImageField = () => {
     setFormData((prev) => ({ ...prev, images: [...(prev.images || []), ""] }));
   };
+
+  const toggleTag = (tag: string) => {
+    setFormData((prev) => {
+      const currentTags = prev.vibeTags || [];
+      if (currentTags.includes(tag)) {
+        return { ...prev, vibeTags: currentTags.filter(t => t !== tag) };
+      } else {
+        return { ...prev, vibeTags: [...currentTags, tag] };
+      }
+    });
+  };
+
+  const handleCreateTag = async () => {
+    if (!newTagValue.trim()) return;
+    const result = await addTag(newTagValue.trim());
+    if (result.success) {
+      toggleTag(newTagValue.trim());
+      setNewTagValue("");
+      setIsAddingTag(false);
+      toast.success("Tag added to master list");
+    }
+  };
+
+  const filteredMasterTags = useMemo(() => {
+    if (!tagSearch) return masterTags.slice(0, 10);
+    return masterTags.filter(t => t.toLowerCase().includes(tagSearch.toLowerCase()))
+      .filter(t => !(formData.vibeTags || []).includes(t))
+      .slice(0, 10);
+  }, [tagSearch, formData.vibeTags]);
 
   return (
     <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
@@ -217,16 +252,72 @@ export function SpotForm({ initialData, onSuccess }: SpotFormProps) {
             <RiFireLine className="h-5 w-5" />
             Vibe & Tags
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="vibeTags">Vibe Tags (comma separated)</Label>
-              <Input
-                id="vibeTags"
-                value={formData.vibeTags?.join(", ")}
-                onChange={(e) => handleArrayChange("vibeTags", e.target.value)}
-                placeholder="Aesthetic, Lively, Cozy..."
-              />
+              <Label>Vibe Tags (Centralized)</Label>
+              <div className="flex flex-wrap gap-2 mb-3 min-h-[40px] p-3 rounded-xl border border-border bg-muted/20">
+                {(formData.vibeTags || []).length === 0 && <span className="text-xs text-muted-foreground italic">No tags selected</span>}
+                {formData.vibeTags?.map(tag => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => toggleTag(tag)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black border border-primary/20 hover:bg-primary/20 transition-all uppercase tracking-tight"
+                  >
+                    {tag}
+                    <RiCloseLine className="h-3 w-3" />
+                  </button>
+                ))}
+              </div>
+              
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search vibe tags..." 
+                    className="pl-9"
+                    value={tagSearch}
+                    onChange={(e) => setTagSearch(e.target.value)}
+                  />
+                  {tagSearch && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-xl z-50 p-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                      {filteredMasterTags.length > 0 ? (
+                        filteredMasterTags.map(tag => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              toggleTag(tag);
+                              setTagSearch("");
+                            }}
+                            className="w-full text-left px-3 py-2 text-xs font-bold hover:bg-muted rounded-lg transition-colors"
+                          >
+                            {tag}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="p-2 space-y-2">
+                           <p className="text-[10px] text-muted-foreground text-center">No matching tags</p>
+                           <button
+                             type="button"
+                             onClick={() => {
+                               setIsAddingTag(true);
+                               setNewTagValue(tagSearch);
+                               setTagSearch("");
+                             }}
+                             className="w-full flex items-center justify-center gap-2 py-2 bg-primary/5 text-primary text-xs font-bold rounded-lg border border-primary/20"
+                           >
+                             <RiAddLine className="h-4 w-4" />
+                             Add &quot;{tagSearch}&quot; to Master List
+                           </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="whoItsFor">Who It's For (comma separated)</Label>
               <Input

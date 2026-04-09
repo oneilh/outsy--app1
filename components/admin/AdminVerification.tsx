@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { RiShieldCheckLine } from "react-icons/ri";
+import { RiShieldCheckLine, RiTimeLine } from "react-icons/ri";
 import { Spot } from "@/lib/types";
 import { verifySpot } from "@/app/actions/spots";
 import { toast } from "sonner";
@@ -32,16 +32,24 @@ const TIER_STYLES = {
 };
 
 export function AdminVerification({ spots: initialSpots }: AdminVerificationProps) {
-  const [filter, setFilter] = useState<"all" | "urgent" | "due" | "pending" | "ok">("all");
   const router = useRouter();
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<"all" | "urgent" | "due" | "pending" | "ok">("all");
 
   const handleVerify = async (id: string, name: string) => {
-    const result = await verifySpot(id);
-    if (result.success) {
-      toast.success(`${name} verified!`);
-      router.refresh();
-    } else {
-      toast.error("Failed to verify spot");
+    setLoadingId(id);
+    try {
+      const result = await verifySpot(id);
+      if (result.success) {
+        toast.success(`${name} verified!`);
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to verify spot");
+      }
+    } catch (error) {
+      toast.error("An error occurred during verification");
+    } finally {
+      setLoadingId(null);
     }
   };
 
@@ -122,13 +130,24 @@ export function AdminVerification({ spots: initialSpots }: AdminVerificationProp
                    </div>
                 </div>
               </div>
-              <button 
-                onClick={() => handleVerify(spot.id, spot.name)}
-                className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-foreground hover:bg-green-600 hover:text-white transition-all shadow-sm"
-                title="Mark as Verified"
-              >
-                <RiShieldCheckLine className="h-5 w-5" />
-              </button>
+              <div className="flex flex-col gap-2">
+                <button 
+                  onClick={() => handleVerify(spot.id, spot.name)}
+                  disabled={loadingId === spot.id || (spot.isVerified && tier === "ok")}
+                  className={`h-9 w-9 rounded-full flex items-center justify-center transition-all shadow-sm ${
+                    loadingId === spot.id ? "bg-muted text-muted-foreground" :
+                    (spot.isVerified && tier === "ok") ? "bg-green-50 text-green-600 opacity-50 cursor-not-allowed" :
+                    "bg-primary/10 text-primary hover:bg-green-600 hover:text-white"
+                  }`}
+                  title="Mark as Verified"
+                >
+                  {loadingId === spot.id ? (
+                    <RiTimeLine className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <RiShieldCheckLine className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}
