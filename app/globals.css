@@ -163,3 +163,62 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
+
+/* Safe Area Utilities */
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.pl-safe {
+  padding-left: env(safe-area-inset-left);
+}
+.pr-safe {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Splide Custom Pagination */
+.splide-custom .splide__pagination {
+  bottom: 24px;
+  padding: 0 20px;
+  justify-content: center;
+  gap: 6px;
+}
+
+.splide-custom .splide__pagination__page {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  border-radius: 100px;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.splide-custom .splide__pagination__page.is-active {
+  width: 20px;
+  background: #FFFFFF;
+  transform: none;
+}
+
+.splide-gallery .splide__pagination {
+  bottom: 12px;
+}
+
+.splide-gallery .splide__pagination__page {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.splide-gallery .splide__pagination__page.is-active {
+  background: var(--primary);
+}
+
+/* Fix for hero image overflow */
+.splide-custom .splide__track {
+  height: 100%;
+}
+
+.splide-custom .splide__list {
+  height: 100%;
+}

@@ -7,7 +7,10 @@ import {
   RiBookmarkLine,
   RiBookmarkFill,
   RiPlayFill,
+  RiShareLine,
+  RiCheckLine,
 } from "react-icons/ri";
+import { useState } from "react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import type { Spot } from "@/lib/types";
@@ -32,6 +35,49 @@ const BUDGET_SYMBOLS: Record<string, string> = {
 
 interface SpotHeroProps {
   spot: Spot;
+}
+
+function ShareSpotButton({ spot }: { spot: Spot }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = typeof window !== 'undefined' ? window.location.href : '';
+    const shareData = {
+      title: `${spot.name} — Outsy`,
+      text: `Check out ${spot.name} on Outsy!`,
+      url: url,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') console.error(err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  return (
+    <button
+      onClick={handleShare}
+      className="flex items-center justify-center h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-all shadow-xl border border-white/20 active:scale-90 relative"
+      aria-label="Share spot"
+    >
+      {copied ? (
+        <RiCheckLine className="h-6 w-6 text-green-400" />
+      ) : (
+        <RiShareLine className="h-6 w-6" />
+      )}
+    </button>
+  );
 }
 
 export function SpotHero({ spot }: SpotHeroProps) {
@@ -83,56 +129,63 @@ export function SpotHero({ spot }: SpotHeroProps) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
       {/* Top controls */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 pt-safe z-30">
-        <Link
-          href="/"
-          className="flex items-center justify-center h-10 w-10 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-black/60 transition-colors shadow-lg border border-white/10"
-          aria-label="Go back"
-        >
-          <RiArrowLeftLine className="h-6 w-6" />
-        </Link>
+      <div className="absolute top-0 left-0 right-0 z-40 px-6 pt-10">
+        <div className="max-w-2xl mx-auto w-full flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center justify-center h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-all shadow-xl border border-white/20 active:scale-90"
+            aria-label="Go back"
+          >
+            <RiArrowLeftLine className="h-6 w-6" />
+          </Link>
 
-        <button
-          onClick={() => toggleSave(spot.id)}
-          className="flex items-center justify-center h-10 w-10 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-black/60 transition-colors shadow-lg border border-white/10"
-          aria-label={isSaved(spot.id) ? "Remove from saved" : "Save spot"}
-        >
-          {isSaved(spot.id) ? (
-            <RiBookmarkFill className="h-6 w-6 text-accent" />
-          ) : (
-            <RiBookmarkLine className="h-6 w-6" />
-          )}
-        </button>
+          <div className="flex items-center gap-2">
+            <ShareSpotButton spot={spot} />
+            <button
+              onClick={() => toggleSave(spot.id)}
+              className="flex items-center justify-center h-12 w-12 rounded-2xl bg-black/30 backdrop-blur-xl text-white hover:bg-black/50 transition-all shadow-xl border border-white/20 active:scale-90"
+              aria-label={isSaved(spot.id) ? "Remove from saved" : "Save spot"}
+            >
+              {isSaved(spot.id) ? (
+                <RiBookmarkFill className="h-6 w-6 text-accent" />
+              ) : (
+                <RiBookmarkLine className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Bottom info overlay */}
-      <div className="absolute bottom-0 left-0 right-0 px-5 pb-8 z-20 pointer-events-none">
-        <div className="flex items-center gap-2 mb-3 pointer-events-auto">
-          <span className="inline-flex items-center rounded-full px-3 py-0.5 text-[9px] font-bold bg-primary text-white uppercase tracking-widest border border-white/10">
-            {CATEGORY_LABELS[spot.category] ?? spot.category}
-          </span>
-          {spot.isNew && (
-            <span className="inline-flex items-center rounded-full px-3 py-0.5 text-[9px] font-bold bg-accent text-secondary uppercase tracking-widest border border-white/10">
-              New
+      <div className="absolute bottom-0 left-0 right-0 pb-10 z-20 pointer-events-none">
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="flex items-center gap-2 mb-4 pointer-events-auto">
+            <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-primary text-white uppercase tracking-widest border border-white/10 shadow-sm">
+              {CATEGORY_LABELS[spot.category] ?? spot.category}
             </span>
-          )}
-          {spot.isOutsyPick && (
-            <span className="inline-flex items-center rounded-full px-3 py-0.5 text-[9px] font-bold bg-white text-black uppercase tracking-widest border border-white/10">
-              Outsy Pick
+            {spot.isNew && (
+              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-accent text-secondary uppercase tracking-widest border border-white/10 shadow-sm">
+                New
+              </span>
+            )}
+            {spot.isOutsyPick && (
+              <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold bg-white text-black uppercase tracking-widest border border-white/10 shadow-sm">
+                Outsy Pick
+              </span>
+            )}
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.1] mb-3 drop-shadow-2xl">
+            {spot.name}
+          </h1>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-white/90 font-bold flex items-center gap-2 uppercase tracking-[0.1em]">
+              <span className="opacity-90">{spot.area}</span>
+              <span className="h-1 w-1 rounded-full bg-accent/60" />
+              <span className="text-accent bg-black/40 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded text-[10px] font-black">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
             </span>
-          )}
-        </div>
-
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.1] mb-2 drop-shadow-lg">
-          {spot.name}
-        </h1>
-
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-white/90 font-medium flex items-center gap-1.5 uppercase tracking-wide">
-            <span className="opacity-80">{spot.area}</span>
-            <span className="h-1 w-1 rounded-full bg-accent" />
-            <span className="text-accent-foreground bg-accent px-1.5 py-0.5 rounded text-[10px] font-bold">{BUDGET_SYMBOLS[spot.budgetTier]}</span>
-          </span>
+          </div>
         </div>
       </div>
     </div>

@@ -2,57 +2,40 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { RiMapPinLine, RiTimeLine, RiMoneyDollarCircleLine, RiArrowLeftLine, RiCheckLine, RiCloseLine } from "react-icons/ri";
+import { RiMapPinLine, RiTimeLine, RiMoneyDollarCircleLine, RiLayoutGridLine, RiCheckLine, RiCloseLine } from "react-icons/ri";
 import { useCompare } from "@/lib/context/CompareContext";
 import { getSpotById } from "@/lib/data";
 import type { Spot } from "@/lib/types";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { VerificationBadge } from "@/components/spots/VerificationBadge";
 
-const BUDGET_SYMBOLS: Record<string, string> = {
-  budget: "₦",
-  mid: "₦₦",
-  splurge: "₦₦₦",
+const BUDGET_LABELS: Record<string, string> = {
+  budget: "Budget-friendly",
+  mid: "Mid-range",
+  splurge: "Splurge",
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  eating: "Eating",
-  drinking: "Drinking",
-  outdoors: "Outdoors",
-  activities: "Activities",
-  nightlife: "Nightlife",
+  eating: "Eat",
+  drinking: "Drink",
+  outdoors: "Outdoor",
+  activities: "Activity",
+  nightlife: "Club",
   cafe: "Café",
   hotel: "Hotel",
   event: "Event",
 };
 
-function SpotColumn({ spot }: { spot: Spot }) {
+function ComparisonSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col min-w-0">
-      {/* Image */}
-      <Link href={`/spots/${spot.slug}`} className="block group">
-        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl mb-3 shadow-sm group-hover:shadow-lg transition-shadow duration-300">
-          <Image
-            src={spot.images[0]}
-            alt={spot.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
-          
-          <div className="absolute top-2 left-2">
-            <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[8px] font-black uppercase bg-black/60 text-white backdrop-blur-md border border-white/10 shadow-sm">
-              {CATEGORY_LABELS[spot.category] ?? spot.category}
-            </span>
-          </div>
-        </div>
-        <h2 className="font-bold text-sm md:text-base text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300">
-          {spot.name}
-        </h2>
-      </Link>
-      <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
-        <RiMapPinLine className="h-3 w-3 flex-shrink-0" />
-        <span className="text-[10px] md:text-xs truncate">{spot.area}</span>
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+          {label}
+        </h3>
+        <div className="h-px w-full bg-border/40" />
       </div>
+      {children}
     </div>
   );
 }
@@ -63,155 +46,179 @@ export default function ComparePage() {
 
   if (spots.length < 2) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-4 text-center">
-        <div className="flex items-center justify-center h-20 w-20 rounded-full bg-muted shadow-inner">
-          <RiArrowLeftLine className="h-8 w-8 text-muted-foreground" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-8 px-4 text-center">
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+          <div className="relative flex items-center justify-center h-24 w-24 rounded-full bg-surface border border-border shadow-xl">
+             <RiLayoutGridLine className="h-10 w-10 text-primary" />
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-foreground">Nothing to compare yet</h2>
-          <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto">
-            Select 2–3 spots using the + button on any collection or saved page to see them side by side.
+        <div className="space-y-3">
+          <h2 className="text-2xl font-black text-foreground tracking-tight">Your shortlist is empty</h2>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+            Pick 2–3 spots you vibe with and we&apos;ll help you decide between them side-by-side.
           </p>
         </div>
         <Link
           href="/collections"
-          className="rounded-full bg-primary px-8 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-all shadow-md hover:shadow-lg active:scale-95"
+          className="rounded-2xl bg-primary px-10 py-4 text-sm font-black text-white hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:scale-105 active:scale-95"
         >
-          Browse Collections
+          Explore Lagos Spots
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="px-4 lg:px-8 pt-8 pb-6 flex items-end justify-between border-b border-border/40">
-        <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">Compare</h1>
-          <p className="text-muted-foreground text-sm mt-1 uppercase font-bold tracking-widest text-[10px]">
-            {spots.length} spots side by side
-          </p>
-        </div>
-        <button
-          onClick={clearCompare}
-          className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-bold text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-all active:scale-95"
-        >
-          <RiCloseLine className="h-4 w-4" />
-          CLEAR ALL
-        </button>
-      </div>
-
-      <div className="px-4 lg:px-8 pb-16">
-        {/* Spot headers */}
-        <div
-          className="grid gap-6 md:gap-8 mb-8 mt-6"
-          style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
-        >
-          <div /> {/* label column spacer */}
-          {spots.map((spot) => (
-            <SpotColumn key={spot.id} spot={spot} />
-          ))}
+    <div className="min-h-screen bg-background pb-32">
+      <PageContainer>
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-6 pb-12">
+          <div>
+            <h1 className="text-4xl font-black text-foreground tracking-tighter mb-2">The Shortlist</h1>
+            <p className="text-muted-foreground text-sm font-medium">
+              Comparing {spots.length} curated experiences in Lagos
+            </p>
+          </div>
+          <button
+            onClick={clearCompare}
+            className="self-start md:self-auto flex items-center gap-2 rounded-2xl bg-muted/50 px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-95"
+          >
+            <RiCloseLine className="h-4 w-4" />
+            Clear Shortlist
+          </button>
         </div>
 
-        {/* Comparison rows */}
-        {[
-          {
-            label: "Price",
-            render: (s: Spot) => (
-              <div>
-                <span className="text-xs font-black text-foreground tracking-wide bg-muted px-2 py-0.5 rounded-md">
-                   {BUDGET_SYMBOLS[s.budgetTier]}
-                </span>
-                <p className="text-[10px] text-muted-foreground mt-1 font-medium">{s.priceRange}</p>
-              </div>
-            ),
-          },
-          {
-            label: "Best Time",
-            render: (s: Spot) => (
-              <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                <RiTimeLine className="h-3.5 w-3.5 text-primary" />
-                {s.bestTimeToGo}
-              </div>
-            ),
-          },
-          {
-            label: "Vibes",
-            render: (s: Spot) => (
-              <div className="flex flex-wrap gap-1">
-                {s.vibeTags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-block rounded-md bg-secondary/10 px-1.5 py-0.5 text-[9px] font-bold text-secondary uppercase tracking-tighter"
-                  >
-                    {tag}
+        {/* Comparison Grid */}
+        <div className="relative">
+          {/* Main Table/Grid */}
+          <div className="grid grid-cols-[80px_1fr] md:grid-cols-[120px_1fr] gap-4 md:gap-8">
+            
+            {/* Left Labels (Hidden on very small mobile if desired, or made narrow) */}
+            <div className="space-y-24 mt-[280px] md:mt-[320px]">
+              <div className="flex flex-col gap-[140px] md:gap-[160px]">
+                {["The Vibe", "The Deal", "Timing", "Crowd", "Included"].map((label) => (
+                  <span key={label} className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground vertical-text md:horizontal-text origin-left transform md:rotate-0 h-10">
+                    {label}
                   </span>
                 ))}
               </div>
-            ),
-          },
-          {
-            label: "Perfect For",
-            render: (s: Spot) => (
-              <div className="flex flex-wrap gap-1">
-                {s.whoItsFor.length > 0
-                  ? s.whoItsFor.slice(0, 2).map((w) => (
-                      <span
-                        key={w}
-                        className="inline-block rounded-md bg-accent/10 px-1.5 py-0.5 text-[9px] font-bold text-accent uppercase tracking-tighter"
-                      >
-                        {w}
-                      </span>
-                    ))
-                  : <span className="text-[10px] text-muted-foreground/40 font-black">—</span>}
-              </div>
-            ),
-          },
-          {
-            label: "Amenities",
-            render: (s: Spot) => (
-              <div className="flex flex-wrap gap-1">
-                {s.amenities.slice(0, 3).map((a) => (
-                  <div key={a} className="h-1.5 w-1.5 rounded-full bg-green-500/50" title={a} />
-                ))}
-              </div>
-            ),
-          },
-        ].map(({ label, render }) => (
-          <div
-            key={label}
-            className="grid gap-6 md:gap-8 border-t border-border/40"
-            style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
-          >
-            <span className="py-5 pr-3 text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-tight self-start">
-              {label}
-            </span>
-            {spots.map((spot) => (
-              <div key={spot.id} className="py-5">
-                {render(spot)}
-              </div>
-            ))}
-          </div>
-        ))}
+            </div>
 
-        {/* View spot CTAs */}
-        <div
-          className="grid gap-6 md:gap-8 mt-10"
-          style={{ gridTemplateColumns: `5rem repeat(${spots.length}, 1fr)` }}
-        >
-          <div />
-          {spots.map((spot) => (
-            <Link
-              key={spot.id}
-              href={`/spots/${spot.slug}`}
-              className="block rounded-full bg-foreground text-background px-3 py-3 text-center text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
-            >
-              Go to Spot
-            </Link>
-          ))}
+            {/* Spots Columns */}
+            <div className={`grid gap-4 md:gap-8`} style={{ gridTemplateColumns: `repeat(${spots.length}, 1fr)` }}>
+              {spots.map((spot) => (
+                <div key={spot.id} className="space-y-12 min-w-0">
+                  {/* Hero Header */}
+                  <div className="space-y-4">
+                    <Link href={`/spots/${spot.slug}`} className="block group">
+                      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-2xl transition-all duration-500 group-hover:shadow-primary/10 group-hover:scale-[0.98]">
+                        <Image
+                          src={spot.images[0]}
+                          alt={spot.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          sizes="(max-width: 768px) 45vw, 30vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        
+                        <div className="absolute top-3 left-3">
+                           <span className="backdrop-blur-xl bg-white/10 border border-white/20 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg">
+                            {CATEGORY_LABELS[spot.category] ?? spot.category}
+                          </span>
+                        </div>
+
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h2 className="text-white text-sm md:text-xl font-black leading-tight group-hover:text-primary transition-colors">
+                            {spot.name}
+                          </h2>
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="flex items-center gap-1.5 text-muted-foreground px-1">
+                      <RiMapPinLine className="h-3 w-3" />
+                      <span className="text-[10px] md:text-xs font-bold truncate uppercase tracking-wider">{spot.area}</span>
+                    </div>
+                  </div>
+
+                  {/* Vibes */}
+                  <div className="h-[120px] md:h-[140px] overflow-hidden">
+                    <div className="flex flex-wrap gap-1.5">
+                      {spot.vibeTags.slice(0, 4).map((tag) => (
+                        <span key={tag} className="px-2.5 py-1.5 bg-secondary/5 border border-secondary/10 text-secondary rounded-lg text-[10px] font-black uppercase tracking-tighter">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* The Deal (Price) */}
+                  <div className="h-[120px] md:h-[140px]">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3].map((n) => (
+                          <RiMoneyDollarCircleLine 
+                            key={n} 
+                            className={`h-5 w-5 ${n <= (spot.budgetTier === 'budget' ? 1 : spot.budgetTier === 'mid' ? 2 : 3) ? 'text-primary' : 'text-muted/30'}`} 
+                          />
+                        ))}
+                      </div>
+                      <p className="text-[11px] font-black text-foreground mt-2">{spot.priceRange}</p>
+                      <p className="text-[9px] font-bold text-muted-foreground uppercase">{BUDGET_LABELS[spot.budgetTier]}</p>
+                    </div>
+                  </div>
+
+                  {/* Timing */}
+                  <div className="h-[120px] md:h-[140px]">
+                    <div className="flex items-start gap-2">
+                      <div className="h-8 w-8 rounded-xl bg-accent/5 border border-accent/10 flex items-center justify-center flex-shrink-0">
+                        <RiTimeLine className="h-4 w-4 text-accent" />
+                      </div>
+                      <p className="text-[11px] font-black text-foreground pt-1">{spot.bestTimeToGo}</p>
+                    </div>
+                  </div>
+
+                  {/* Perfect For */}
+                  <div className="h-[120px] md:h-[140px]">
+                    <div className="flex flex-col gap-1.5">
+                      {spot.whoItsFor.slice(0, 2).map((who) => (
+                        <div key={who} className="flex items-center gap-2">
+                          <RiCheckLine className="h-3.5 w-3.5 text-green-500" />
+                          <span className="text-[10px] font-bold text-foreground">{who}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Amenities */}
+                  <div className="h-[120px] md:h-[140px]">
+                    <div className="flex flex-wrap gap-3">
+                      {spot.amenities.slice(0, 4).map((amenity) => (
+                        <div key={amenity} className="h-5 w-5 rounded-md bg-muted flex items-center justify-center" title={amenity}>
+                           <RiCheckLine className="h-3 w-3 text-muted-foreground" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Final Action */}
+                  <div className="pt-4">
+                    <Link
+                      href={`/spots/${spot.slug}`}
+                      className="flex items-center justify-center w-full h-12 rounded-2xl bg-foreground text-background text-[11px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-xl shadow-black/5 active:scale-95"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+
+                  <VerificationBadge spot={spot} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </PageContainer>
     </div>
   );
 }
+

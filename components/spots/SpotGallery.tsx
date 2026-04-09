@@ -33,7 +33,7 @@ export function SpotGallery({ spot }: SpotGalleryProps) {
         </div>
       </div>
 
-      <div className="relative rounded-3xl overflow-hidden aspect-[4/5] md:aspect-video bg-muted group shadow-2xl">
+      <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] md:aspect-[3/2] bg-muted group shadow-xl">
         <Splide
           options={{
             type: "loop",
@@ -41,14 +41,15 @@ export function SpotGallery({ spot }: SpotGalleryProps) {
             arrows: true,
             pagination: true,
             gap: "0rem",
-            speed: 400,
+            speed: 600,
+            easing: "cubic-bezier(0.16, 1, 0.3, 1)",
             breakpoints: {
               768: {
                  arrows: false,
               }
             }
           }}
-          className="h-full"
+          className="h-full splide-gallery"
         >
           {allMedia.map((media, index) => (
             <SplideSlide key={index} className="h-full">
@@ -62,12 +63,12 @@ export function SpotGallery({ spot }: SpotGalleryProps) {
                         fill
                         className="object-cover"
                       />
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center group/play">
                         <button 
                           onClick={() => setIsPlaying(true)}
-                          className="h-16 w-16 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95"
+                          className="h-20 w-20 rounded-full bg-white/20 backdrop-blur-xl border border-white/40 flex items-center justify-center text-white transition-all group-hover/play:scale-110 active:scale-90"
                         >
-                          <RiPlayFill className="h-8 w-8 ml-1" />
+                          <RiPlayFill className="h-10 w-10 ml-1" />
                         </button>
                       </div>
                     </>
@@ -80,8 +81,8 @@ export function SpotGallery({ spot }: SpotGalleryProps) {
                       onEnded={() => setIsPlaying(false)}
                     />
                   )}
-                  <div className="absolute top-4 right-4 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                    Video
+                  <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-white/10">
+                    Video Check
                   </div>
                 </div>
               ) : (
@@ -92,6 +93,9 @@ export function SpotGallery({ spot }: SpotGalleryProps) {
                     fill
                     className="object-cover"
                   />
+                  <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-white/10">
+                    Photo {index + 1}
+                  </div>
                 </div>
               )}
             </SplideSlide>

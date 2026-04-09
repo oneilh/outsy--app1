@@ -64,19 +64,19 @@ export default async function SpotDetailPage({ params }: Props) {
       <SpotHero spot={spot} />
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 pt-8 pb-32 space-y-10">
+      <div className="max-w-2xl mx-auto px-6 pt-10 pb-32 space-y-12">
         
         {/* Quick facts row */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex items-start gap-3 rounded-2xl bg-secondary/5 border border-secondary/10 p-4 transition-all hover:bg-secondary/10">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary flex-shrink-0">
-              <RiMoneyDollarCircleLine className="h-6 w-6" />
+          <div className="flex items-start gap-4 rounded-3xl bg-secondary/[0.03] border border-secondary/5 p-5 transition-all hover:bg-secondary/[0.05]">
+            <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-primary/10 text-primary flex-shrink-0 shadow-sm">
+              <RiMoneyDollarCircleLine className="h-7 w-7" />
             </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Price Range</p>
-              <p className="text-sm font-bold text-foreground leading-none mb-1.5">{spot.priceRange}</p>
+            <div className="pt-0.5">
+              <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.15em] mb-1.5">Price</p>
+              <p className="text-base font-bold text-foreground leading-none mb-2">{spot.priceRange}</p>
               <span
-                className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${
+                className={`inline-block rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider ${
                   BUDGET_COLORS[spot.budgetTier] ?? "text-muted-foreground bg-muted"
                 }`}
               >
@@ -85,20 +85,20 @@ export default async function SpotDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="flex items-start gap-3 rounded-2xl bg-accent/5 border border-accent/10 p-4 transition-all hover:bg-accent/10">
-             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-accent/10 text-accent flex-shrink-0">
-              <RiTimeLine className="h-6 w-6" />
+          <div className="flex items-start gap-4 rounded-3xl bg-accent/[0.03] border border-accent/5 p-5 transition-all hover:bg-accent/[0.05]">
+             <div className="flex items-center justify-center h-12 w-12 rounded-2xl bg-accent/10 text-accent flex-shrink-0 shadow-sm">
+              <RiTimeLine className="h-7 w-7" />
             </div>
-            <div>
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Best Time</p>
-              <p className="text-sm font-bold text-foreground leading-none">{spot.bestTimeToGo}</p>
+            <div className="pt-0.5">
+              <p className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.15em] mb-1.5">Best Time</p>
+              <p className="text-base font-bold text-foreground leading-none">{spot.bestTimeToGo}</p>
             </div>
           </div>
         </div>
 
         {/* Description - Premium Typography */}
-        <div className="relative">
-          <p className="text-lg md:text-xl text-foreground font-medium leading-relaxed italic border-l-4 border-primary pl-6 py-2">
+        <div className="relative py-2">
+          <p className="text-xl md:text-2xl text-foreground font-medium leading-[1.6] italic border-l-4 border-primary/30 pl-8">
             {spot.description}
           </p>
         </div>
@@ -106,33 +106,23 @@ export default async function SpotDetailPage({ params }: Props) {
         {/* Vibe Gallery */}
         <SpotGallery spot={spot} />
 
-        {/* Vibe tags */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-            The Vibe
-          </h2>
-          <VibeTagList tags={spot.vibeTags} />
-        </div>
+        {/* Vibe tags - Component has its own heading */}
+        <VibeTagList tags={spot.vibeTags} />
 
-        {/* Amenities */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-            Amenities
-          </h2>
-          <AmenitiesList amenities={spot.amenities} />
-        </div>
+        {/* Amenities - Component has its own heading */}
+        <AmenitiesList amenities={spot.amenities} />
 
         {/* Who it's for */}
         {spot.whoItsFor.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-              Perfect For
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+              <span className="h-px w-4 bg-border" /> Perfect For
             </h2>
             <div className="flex flex-wrap gap-2">
               {spot.whoItsFor.map((who) => (
                 <span
                   key={who}
-                  className="inline-flex items-center rounded-xl px-4 py-2 text-sm font-semibold bg-primary/5 text-primary border border-primary/10"
+                  className="inline-flex items-center rounded-xl px-5 py-2.5 text-sm font-bold bg-primary/[0.03] text-primary border border-primary/10 hover:bg-primary/5 transition-colors"
                 >
                   {who.charAt(0).toUpperCase() + who.slice(1)}
                 </span>
@@ -231,8 +221,8 @@ export default async function SpotDetailPage({ params }: Props) {
       </div>
 
       {/* Floating Sticky Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 pb-safe bg-gradient-to-t from-background via-background/95 to-transparent z-50">
-        <div className="max-w-2xl mx-auto flex items-center gap-3">
+      <div className="fixed bottom-0 left-0 right-0 p-6 pb-8 md:pb-6 bg-background/60 backdrop-blur-2xl border-t border-border/50 z-50">
+        <div className="max-w-2xl mx-auto flex items-center gap-4">
           <div className="flex-1">
             <GoingNowButton spotId={spot.id} initialCount={spot.goingNowCount} variant="full" />
           </div>
@@ -240,10 +230,10 @@ export default async function SpotDetailPage({ params }: Props) {
             href={spot.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground flex items-center justify-center shadow-xl shadow-secondary/20 hover:scale-105 active:scale-95 transition-all"
+            className="h-14 w-14 rounded-2xl bg-secondary text-secondary-foreground flex items-center justify-center shadow-xl shadow-secondary/20 hover:brightness-110 active:scale-90 transition-all border border-white/10"
             aria-label="Get directions"
           >
-            <RiMapPinLine className="h-7 w-7" />
+            <RiMapPinLine className="h-6 w-6" />
           </Link>
         </div>
       </div>

@@ -10,7 +10,9 @@ export function CompareBar() {
   const { compareIds, toggleCompare, clearCompare } = useCompare();
   const router = useRouter();
 
-  if (compareIds.length === 0) return null;
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+
+  if (compareIds.length === 0 || pathname.startsWith("/spots/")) return null;
 
   const spots = compareIds.map((id) => getSpotById(id)).filter(Boolean);
 
@@ -74,7 +76,7 @@ export function CompareBar() {
             <button
               onClick={() => router.push("/compare")}
               disabled={spots.length < 2}
-              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex-shrink-0"
+              className="flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex-shrink-0"
             >
               Compare
               <RiArrowRightLine className="h-3.5 w-3.5" />

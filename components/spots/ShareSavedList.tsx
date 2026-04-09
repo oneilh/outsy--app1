@@ -49,7 +49,7 @@ export function ShareSavedList({ savedIds }: ShareSavedListProps) {
     <div className="flex items-center gap-2">
       <button
         onClick={handleShare}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/20 transition-all active:scale-95"
+        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm font-semibold hover:bg-primary/20 transition-all active:scale-95"
       >
         {copied ? (
           <>
@@ -66,7 +66,7 @@ export function ShareSavedList({ savedIds }: ShareSavedListProps) {
       
       <a
         href={`mailto:?subject=My Outsy Picks&body=Check out these spots I saved on Outsy: ${getShareUrl()}`}
-        className="flex items-center justify-center h-10 w-10 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center justify-center h-10 w-10 rounded-xl border border-border text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Email list"
       >
         <RiMailSendLine className="h-4 w-4" />
