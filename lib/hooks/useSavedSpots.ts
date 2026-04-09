@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import posthog from "posthog-js";
 
 const STORAGE_KEY = "outsy-saved";
 
@@ -14,8 +15,16 @@ export function useSavedSpots() {
 
   const toggleSave = useCallback((id: string) => {
     setSavedIds((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      const isRemoving = prev.includes(id);
+      const next = isRemoving ? prev.filter((x) => x !== id) : [...prev, id];
+      
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      
+      posthog.capture(isRemoving ? "spot_unsaved" : "spot_saved", {
+        spot_id: id,
+        total_saved: next.length
+      });
+
       return next;
     });
   }, []);

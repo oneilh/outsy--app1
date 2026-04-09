@@ -5,6 +5,7 @@ import "@splidejs/react-splide/css";
 import Image from "next/image";
 import Link from "next/link";
 import { RiMapPinLine, RiFireLine, RiTimerFlashLine, RiStarFill, RiFlashlightLine } from "react-icons/ri";
+import posthog from "posthog-js";
 import type { Spot } from "@/lib/types";
 
 interface OutsyPicksCarouselProps {
@@ -62,6 +63,7 @@ export function OutsyPicksCarousel({ picks }: OutsyPicksCarouselProps) {
           <SplideSlide key={spot.id}>
             <Link
               href={`/spots/${spot.slug}`}
+              onClick={() => posthog.capture("pick_clicked", { spot_id: spot.id, spot_name: spot.name })}
               className="block relative h-64 md:h-72 lg:h-80 rounded-2xl overflow-hidden group"
             >
               <Image

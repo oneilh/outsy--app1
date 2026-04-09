@@ -19,8 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const collection = getCollectionBySlug(slug);
   if (!collection) return {};
   return {
-    title: `${collection.name} — Outsy Collections`,
-    description: collection.description,
+    title: `${collection.name} | Lagos Spot Collections — Outsy`,
+    description: `${collection.description} | Browse curated lists of the best places in Lagos for every mood, crew, and occasion.`,
+    openGraph: {
+      title: collection.name,
+      description: collection.description,
+      images: [collection.coverImage],
+    },
   };
 }
 
@@ -105,7 +110,7 @@ export default async function CollectionDetailPage({ params }: Props) {
         {/* Grid */}
         <div>
           {spots.length > 0 ? (
-            <SpotGrid spots={spots} />
+            <SpotGrid spots={spots} className="lg:grid-cols-5 xl:grid-cols-6" />
           ) : (
             <div className="py-32 text-center rounded-[3rem] border border-dashed border-border bg-muted/20">
               <p className="text-muted-foreground font-medium">

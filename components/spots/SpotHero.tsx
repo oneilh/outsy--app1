@@ -175,7 +175,7 @@ export function SpotHero({ spot }: SpotHeroProps) {
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[1] mb-5 drop-shadow-2xl max-w-4xl uppercase tracking-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-[1] mb-5 drop-shadow-2xl max-w-4xl uppercase tracking-tight">
             {spot.name}
           </h1>
 

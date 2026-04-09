@@ -34,15 +34,16 @@ const BUDGET_SYMBOLS: Record<string, string> = {
 
 interface SpotGridProps {
   spots: Spot[];
+  className?: string;
 }
 
-export function SpotGrid({ spots }: SpotGridProps) {
+export function SpotGrid({ spots, className = "" }: SpotGridProps) {
   const { isInCompare, toggleCompare, maxReached } = useCompare();
 
   if (!spots.length) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 ${className}`}>
       {spots.map((spot) => {
         const inCompare = isInCompare(spot.id);
         return (

@@ -57,7 +57,7 @@ export default function CollectionsPage() {
                   <div className="h-[1px] w-full bg-linear-to-r from-border/50 to-transparent" />
                 </div>
                 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-5">
                   {group.map((collection) => (
                     <CollectionCard key={collection.id} collection={collection} />
                   ))}

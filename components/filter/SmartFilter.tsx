@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import {
   RiRestaurantLine,
   RiDrinksLine,
@@ -30,6 +31,7 @@ import {
 } from "react-icons/ri";
 import type { Spot } from "@/lib/types";
 import { useSavedSpots } from "@/lib/hooks/useSavedSpots";
+import { PageContainer } from "@/components/layout/PageContainer";
 
 // ── Filter option definitions ─────────────────────────────────────────────
 
@@ -366,7 +368,8 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
   // ── Results view ────────────────────────────────────────────────────
   if (showResults) {
     return (
-      <div className="flex flex-col gap-6">
+      <PageContainer className="pt-8 md:pt-12">
+        <div className="flex flex-col gap-6">
         {/* Header */}
         <div className="flex items-center gap-3">
           <button
@@ -443,7 +446,8 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
             </button>
           </div>
         )}
-      </div>
+        </div>
+      </PageContainer>
     );
   }
 
@@ -485,7 +489,8 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
   );
 
   return (
-    <div className="flex flex-col gap-8 max-w-2xl mx-auto pb-20">
+    <PageContainer className="pt-8 md:pt-12">
+      <div className="flex flex-col gap-8 max-w-2xl mx-auto pb-20">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -517,7 +522,16 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
       {/* Persistent Footer CTA */}
       <div className="fixed bottom-6 left-6 right-6 flex justify-center z-50 pointer-events-none">
         <button
-          onClick={() => setShowResults(true)}
+          onClick={() => {
+            setShowResults(true);
+            posthog.capture("filter_applied", {
+              activities: filters.activities,
+              who: filters.who,
+              feeling: filters.feeling,
+              budget: filters.budget,
+              result_count: allResults.length
+            });
+          }}
           className={`pointer-events-auto flex items-center justify-center gap-3 w-full max-w-md py-4 rounded-2xl bg-secondary text-white font-bold text-base shadow-2xl transition-all active:scale-[0.98] ${
             !hasAnyFilter ? "opacity-90 grayscale-[0.5]" : "opacity-100"
           }`}
@@ -529,5 +543,6 @@ export function SmartFilter({ allSpots }: SmartFilterProps) {
         </button>
       </div>
     </div>
-  );
+  </PageContainer>
+);
 }

@@ -32,8 +32,12 @@ export function Navigation() {
   const pathname = usePathname();
   const [reportModalOpen, setReportModalOpen] = useState(false);
 
-  // Don't show navigation on the filter page or spot detail pages to keep the experience focused
-  if (pathname.startsWith("/filter") || pathname.startsWith("/spots/")) {
+  // Don't show navigation on the filter page, spot detail pages, or admin routes to keep the experience focused
+  if (
+    pathname.startsWith("/filter") || 
+    pathname.startsWith("/spots/") || 
+    pathname.startsWith("/admin")
+  ) {
     return null;
   }
 

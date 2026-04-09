@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RiShareForwardLine, RiCheckLine } from "react-icons/ri";
+import posthog from "posthog-js";
 import type { Spot } from "@/lib/types";
 
 interface ShareSpotProps {
@@ -19,6 +20,12 @@ export function ShareSpot({ spot, variant = "default" }: ShareSpotProps) {
       text: `Check out ${spot.name} in ${spot.area} on Outsy!`,
       url: url,
     };
+
+    posthog.capture("spot_shared", {
+      spot_id: spot.id,
+      spot_name: spot.name,
+      method: navigator.share ? "native" : "clipboard"
+    });
 
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
       try {

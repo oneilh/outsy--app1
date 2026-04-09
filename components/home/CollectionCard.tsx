@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import posthog from "posthog-js";
 import { RiArrowRightLine } from "react-icons/ri";
 import type { Collection } from "@/lib/types";
 
@@ -11,6 +14,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
   return (
     <Link
       href={`/collections/${collection.slug}`}
+      onClick={() => posthog.capture("collection_clicked", { collection_id: collection.id, collection_name: collection.name })}
       className="block relative rounded-2xl overflow-hidden group aspect-[4/3] bg-card border border-border/50 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-primary/30"
     >
       <Image

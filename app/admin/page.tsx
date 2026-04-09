@@ -28,6 +28,8 @@ import {
   RiPhoneLine,
   RiParkingLine,
   RiPriceTag3Line,
+  RiInstagramLine,
+  RiGlobalLine,
 } from "react-icons/ri";
 import spotsRaw from "@/data/spots.json";
 import collectionsRaw from "@/data/collections.json";
@@ -36,17 +38,11 @@ import { updateReportStatus, deleteReport } from "@/app/actions/reports";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+import { IssueReport } from "@/lib/types";
+
 type Spot = (typeof spotsRaw)[number];
 type Collection = (typeof collectionsRaw)[number];
-type Report = {
-  id: string;
-  spotId: string;
-  spotName: string;
-  issueType: string;
-  description: string;
-  status: "pending" | "resolved" | "ignored";
-  createdAt: string;
-};
+type Report = IssueReport;
 
 const spots = spotsRaw as Spot[];
 const collections = collectionsRaw as Collection[];
@@ -184,25 +180,30 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ── Admin Header ──────────────────────────────────────────────── */}
-      <div className="border-b border-border bg-card mb-6 -mx-4 md:-mx-6 lg:-mx-10 px-4 md:px-6 lg:px-10 py-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/">
-              <Image src="/outsy_logo.svg" alt="Outsy" width={80} height={24} className="h-6 w-auto" />
-            </Link>
-            <span className="text-muted-foreground text-sm font-medium">/ Admin</span>
-          </div>
-          <div className="flex items-center gap-4">
-             <span className="text-xs text-muted-foreground bg-muted px-3 py-1 rounded-full font-medium hidden md:inline-flex">
-              Internal tool — not public
-            </span>
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold">
-              OA
+      {/* ── Admin Header (Full-Bleed) ─────────────────────────────────── */}
+      <header className="border-b border-border bg-card mb-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-10 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link href="/">
+                <Image src="/outsy_logo.svg" alt="Outsy" width={80} height={24} className="h-6 w-auto" />
+              </Link>
+              <span className="text-muted-foreground text-sm font-medium">/ Admin</span>
+            </div>
+            <div className="flex items-center gap-4">
+               <span className="text-xs text-muted-foreground bg-muted px-3 py-1 rounded-full font-medium hidden md:inline-flex">
+                Internal tool — not public
+              </span>
+              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold">
+                OA
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* ── Dashboard Content (Contained) ─────────────────────────────── */}
+      <main className="max-w-7xl mx-auto px-4 md:px-6 lg:px-10 pb-20">
 
       {/* ── Stats row ─────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -574,7 +575,7 @@ export default function AdminPage() {
                             Resolve
                           </button>
                           <button 
-                            onClick={() => handleUpdateReport(report.id, 'ignored')}
+                            onClick={() => handleUpdateReport(report.id, 'dismissed')}
                             className="px-4 py-2 rounded-xl bg-muted text-muted-foreground text-xs font-bold hover:bg-muted/80 transition-colors"
                           >
                             Dismiss
@@ -825,6 +826,7 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+      </main>
     </div>
   );
 }

@@ -34,8 +34,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const spot = getSpotBySlug(slug);
   if (!spot) return {};
   return {
-    title: `${spot.name} — Outsy`,
-    description: spot.description,
+    title: `${spot.name} — ${spot.area}, Lagos | Outsy`,
+    description: `Discover ${spot.name} in ${spot.area}, Lagos. ${spot.description} | Find the vibe, price, and location fast on Outsy.`,
+    openGraph: {
+      title: `${spot.name} in ${spot.area}, Lagos`,
+      description: spot.description,
+      images: [spot.images[0]],
+      type: "website",
+    },
   };
 }
 
@@ -344,7 +350,7 @@ export default async function SpotDetailPage({ params }: Props) {
         <div className="max-w-7xl mx-auto flex items-center justify-end">
           <div className="flex items-center gap-4 w-full md:w-auto md:min-w-[400px]">
             <div className="flex-1">
-              <GoingNowButton spotId={spot.id} initialCount={spot.goingNowCount} variant="full" />
+              <GoingNowButton spotId={spot.id} variant="full" />
             </div>
             <Link
               href={spot.mapsUrl}

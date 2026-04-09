@@ -24,7 +24,7 @@ function PostHogPageView() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    if (pathname && posthog.isFeatureEnabled('analytics')) {
+    if (pathname) {
       let url = window.origin + pathname
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`

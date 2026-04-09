@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { RiLayoutGridLine, RiCheckLine, RiAddLine, RiFlagLine } from "react-icons/ri";
+import { RiLayoutGridLine, RiCheckLine, RiAddLine, RiFlagLine, RiArrowRightLine } from "react-icons/ri";
 import { useCompare } from "@/lib/context/CompareContext";
 import type { Spot } from "@/lib/types";
 import { ReportIssueModal } from "./ReportIssueModal";
+import { toast } from "sonner";
 
 interface DetailActionsProps {
   spot: Spot;
@@ -16,12 +17,28 @@ export function DetailActions({ spot }: DetailActionsProps) {
   
   const inCompare = isInCompare(spot.id);
 
+  const handleToggleCompare = () => {
+    toggleCompare(spot.id);
+    if (inCompare) {
+      toast.success("Removed from shortlist");
+    } else if (!maxReached) {
+      toast.success("Added to shortlist", {
+        action: {
+          label: "View List",
+          onClick: () => window.location.href = "/compare"
+        }
+      });
+    } else {
+      toast.error("Shortlist is full (max 3 spots)");
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col">
         {/* Toggle Compare */}
         <button
-          onClick={() => toggleCompare(spot.id)}
+          onClick={handleToggleCompare}
           disabled={!inCompare && maxReached}
           className="flex items-center gap-3 p-4 hover:bg-muted transition-colors border-b border-border text-left disabled:opacity-50"
         >
