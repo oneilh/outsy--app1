@@ -24,7 +24,7 @@ export function ShareSpot({ spot, variant = "default" }: ShareSpotProps) {
     posthog.capture("spot_shared", {
       spot_id: spot.id,
       spot_name: spot.name,
-      method: navigator.share ? "native" : "clipboard"
+      method: (typeof navigator !== 'undefined' && !!navigator.share) ? "native" : "clipboard"
     });
 
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {

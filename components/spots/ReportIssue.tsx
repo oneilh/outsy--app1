@@ -28,7 +28,7 @@ import { Spot } from '@/lib/types'
 
 interface ReportIssueProps {
   spot?: Spot
-  trigger?: React.ReactNode
+  trigger?: React.ReactElement
 }
 
 export function ReportIssue({ spot, trigger }: ReportIssueProps) {
@@ -70,14 +70,16 @@ export function ReportIssue({ spot, trigger }: ReportIssueProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive gap-2">
-            <RiAlertLine className="w-4 h-4" />
-            <span>Report an issue</span>
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger || (
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive gap-2">
+              <RiAlertLine className="w-4 h-4" />
+              <span>Report an issue</span>
+            </Button>
+          )
+        }
+      />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Report an issue</DialogTitle>
@@ -91,7 +93,7 @@ export function ReportIssue({ spot, trigger }: ReportIssueProps) {
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="issueType">What&apos;s wrong?</Label>
-            <Select onValueChange={setIssueType} required>
+            <Select onValueChange={(val: string | null) => setIssueType(val ?? '')} required>
               <SelectTrigger>
                 <SelectValue placeholder="Select issue type" />
               </SelectTrigger>
