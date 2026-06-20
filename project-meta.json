@@ -1,0 +1,33 @@
+{
+  "id": "outsy",
+  "name": "Outsy",
+  "description": "A curated discovery platform that helps users find and decide on outing locations in under 60 seconds, eliminating decision fatigue.",
+  "image": "/images/portfolio/outsy-cover.jpg",
+  "githubUrl": "https://github.com/oneilh/outsy",
+  "liveUrl": "https://outsy.vercel.app",
+  "tags": [
+    "Next.js 15",
+    "Tailwind CSS v4",
+    "Supabase",
+    "TypeScript"
+  ],
+  "featured": true,
+  "details": {
+    "overview": "Outsy is a high-performance web application engineered to solve decision fatigue by providing instant, curated outing recommendations. Built on a modern Next.js 15 Server Components architecture with Tailwind CSS v4, the platform ensures rapid content delivery and a highly responsive, mobile-first user experience.",
+    "features": [
+      "Frictionless Location Discovery",
+      "Progressive Content Disclosure",
+      "Offline-First Saves & Zero-Friction Sharing"
+    ],
+    "technicalHighlights": [
+      "Implemented a Server Components-first architecture in Next.js 15 to minimize client-side bundle size and push heavy rendering to the server.",
+      "Engineered a scalable, schema-driven mock data strategy that perfectly mirrors a planned Supabase relational database.",
+      "Developed a rigorous mobile-first UI using capability-based media queries to resolve complex touch device interaction edge cases like sticky hover."
+    ],
+    "gallery": [
+      "/images/portfolio/outsy-1.jpg",
+      "/images/portfolio/outsy-2.jpg",
+      "/images/portfolio/outsy-3.jpg"
+    ]
+  }
+}
