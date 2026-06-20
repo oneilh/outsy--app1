@@ -11,7 +11,7 @@
 
 Outsy was built to eliminate the decision fatigue that comes with planning outings. Instead of scrolling across Instagram, TikTok, Google Maps, and WhatsApp for hours, users can open Outsy and instantly receive clear, curated outing ideas with the vibe, price, and location already sorted. 
 
-This project represents my commitment to expanding my skillset while delivering a robust, production-ready solution. I chose a bleeding-edge stack (Next.js 15+ App Router, Tailwind CSS v4) to challenge myself with the latest web standards, focusing heavily on responsive, mobile-first design, performance optimization, and scalable component architecture.
+This project represents my commitment to expanding my skillset while delivering a robust, production-ready solution. I chose a bleeding-edge stack (Next.js 15+ App Router, Tailwind CSS v4, Supabase) to challenge myself with the latest web standards, focusing heavily on responsive, mobile-first design, performance optimization, and scalable component architecture.
 
 ## Screenshots
 

@@ -1,0 +1,39 @@
+{
+  "id": "outsy",
+  "name": "Outsy",
+  "description": "A curated discovery platform that helps users find and decide on outing locations in under 60 seconds, eliminating decision fatigue.",
+  "image": "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image.png",
+  "githubUrl": "https://github.com/oneilh/outsy--app1",
+  "liveUrl": "https://outsy-app1.vercel.app",
+  "tags": [
+    "Next.js 15",
+    "Tailwind CSS v4",
+    "Supabase",
+    "TypeScript",
+    "Academic Capstone"
+  ],
+  "featured": true,
+  "details": {
+    "overview": "Outsy is a high-performance web application engineered to solve decision fatigue by providing instant, curated outing recommendations. Built on a modern Next.js 15 Server Components architecture with Tailwind CSS v4, the platform ensures rapid content delivery and a highly responsive, mobile-first user experience.",
+    "features": [
+      "Frictionless Location Discovery",
+      "Progressive Content Disclosure",
+      "Offline-First Saves & Zero-Friction Sharing"
+    ],
+    "technicalHighlights": [
+      "Implemented a Server Components-first architecture in Next.js 15 to minimize client-side bundle size and push heavy rendering to the server.",
+      "Engineered a scalable, schema-driven mock data strategy that perfectly mirrors a planned Supabase relational database.",
+      "Developed a rigorous mobile-first UI using capability-based media queries to resolve complex touch device interaction edge cases like sticky hover."
+    ],
+    "gallery": [
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%202.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%203.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%204.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%205.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%206.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%207.png"
+    ]
+  }
+}
