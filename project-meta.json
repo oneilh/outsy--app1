@@ -2,7 +2,7 @@
   "id": "outsy",
   "name": "Outsy",
   "description": "A curated discovery platform that helps users find and decide on outing locations in under 60 seconds, eliminating decision fatigue.",
-  "image": "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-cover.jpg",
+  "image": "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image.png",
   "githubUrl": "https://github.com/oneilh/outsy--app1",
   "liveUrl": "https://outsy-app1.vercel.app",
   "tags": [
@@ -26,9 +26,14 @@
       "Developed a rigorous mobile-first UI using capability-based media queries to resolve complex touch device interaction edge cases like sticky hover."
     ],
     "gallery": [
-      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-1.jpg",
-      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-2.jpg",
-      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-3.jpg"
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%202.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%203.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%204.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%205.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%206.png",
+      "https://github.com/oneilh/outsy--app1/raw/master/screenshots/image%20copy%207.png"
     ]
   }
 }
