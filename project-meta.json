@@ -2,14 +2,15 @@
   "id": "outsy",
   "name": "Outsy",
   "description": "A curated discovery platform that helps users find and decide on outing locations in under 60 seconds, eliminating decision fatigue.",
-  "image": "/images/portfolio/outsy-cover.jpg",
-  "githubUrl": "https://github.com/oneilh/outsy",
-  "liveUrl": "https://outsy.vercel.app",
+  "image": "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-cover.jpg",
+  "githubUrl": "https://github.com/oneilh/outsy--app1",
+  "liveUrl": "https://outsy-app1.vercel.app",
   "tags": [
     "Next.js 15",
     "Tailwind CSS v4",
     "Supabase",
-    "TypeScript"
+    "TypeScript",
+    "Academic Capstone"
   ],
   "featured": true,
   "details": {
@@ -25,9 +26,9 @@
       "Developed a rigorous mobile-first UI using capability-based media queries to resolve complex touch device interaction edge cases like sticky hover."
     ],
     "gallery": [
-      "/images/portfolio/outsy-1.jpg",
-      "/images/portfolio/outsy-2.jpg",
-      "/images/portfolio/outsy-3.jpg"
+      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-1.jpg",
+      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-2.jpg",
+      "https://raw.githubusercontent.com/oneilh/outsy--app1/main/public/images/portfolio/outsy-3.jpg"
     ]
   }
 }
